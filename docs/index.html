@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- ═══ EDIT ME ═══════════════════════════════════════════════════════════ -->
+<title>ChronoLogic: measuring what language models know about 1831–1930</title>
+<meta name="description" content="A benchmark for how well language models represent English-language historical context across a century of period texts.">
+<!-- Social preview. Drop an image at docs/assets/og.png (1200×630) and
+     replace the two URLs below with your real GitHub Pages URL. -->
+<meta property="og:title" content="ChronoLogic: measuring what language models know about 1831–1930">
+<meta property="og:description" content="A benchmark for how well language models represent English-language historical context across a century of period texts.">
+<meta property="og:type" content="article">
+<!-- <meta property="og:url" content="https://YOURNAME.github.io/chronologic/"> -->
+<!-- <meta property="og:image" content="https://YOURNAME.github.io/chronologic/assets/og.png"> -->
+<meta name="twitter:card" content="summary_large_image">
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+
+<style>
+/* ───────────────────────────────────────────────────────────────────────────
+   TOKENS
+   Palette: ivory rag paper, warm brown-black ink, Prussian blue (a pigment
+   in use across the whole 1831–1930 window) for rules, links and marks.
+   ─────────────────────────────────────────────────────────────────────── */
+:root {
+  --paper:      #faf6ec;
+  --paper-deep: #f2ebda;   /* excerpt wells, table stripes */
+  --ink:        #2b2621;
+  --ink-soft:   #6d6355;   /* captions, metadata, footnotes */
+  --accent:     #2c4a63;   /* Prussian blue */
+  --rule:       #ddd2bc;
+
+  --measure:    34rem;     /* body column — roughly 68 characters */
+  --measure-wide: 46rem;   /* figures and tables may break out to this */
+
+  --step--1: 0.875rem;
+  --step-0:  1.0625rem;
+  --step-1:  1.25rem;
+  --step-2:  1.5rem;
+  --step-3:  2rem;
+  --step-4:  2.75rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper:      #1c1916;
+    --paper-deep: #262119;
+    --ink:        #eae2d2;
+    --ink-soft:   #9d9384;
+    --accent:     #8fb6d1;
+    --rule:       #3d372e;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  padding: 0 1.5rem 6rem;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Spectral, Georgia, "Times New Roman", serif;
+  font-size: var(--step-0);
+  font-weight: 400;
+  line-height: 1.68;          /* serif body gets a little extra leading */
+  font-feature-settings: "onum" 1, "kern" 1;
+  text-rendering: optimizeLegibility;
+}
+
+/* ── Layout ───────────────────────────────────────────────────────────────
+   Everything sits in one centred column at --measure. Add class="wide" to a
+   figure or table to let it breathe out to --measure-wide.               */
+.wrap { max-width: var(--measure); margin: 0 auto; }
+
+.wide {
+  max-width: var(--measure-wide);
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+@media (max-width: 52rem) {
+  .wide { max-width: 100%; margin-left: 0; transform: none; }
+}
+
+/* ── Masthead ─────────────────────────────────────────────────────────────
+   The hero is the span the benchmark covers: a ruler from 1831 to 1930,
+   one hairline per year, taller marks on the decades.                    */
+.masthead { padding-top: 4.5rem; }
+
+.span-rule { display: block; width: 100%; height: auto; overflow: visible; }
+
+.span-rule .minor { stroke: var(--rule); stroke-width: 1; }
+.span-rule .major { stroke: var(--accent); stroke-width: 1.25; }
+.span-rule .base  { stroke: var(--ink); stroke-width: 1; }
+.span-rule text {
+  fill: var(--ink-soft);
+  font-family: Spectral, Georgia, serif;
+  font-size: 11px;
+  font-variant-numeric: lining-nums;
+}
+
+h1 {
+  margin: 2rem 0 0;
+  font-size: var(--step-4);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.standfirst {
+  margin: 1.25rem 0 0;
+  font-size: var(--step-1);
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.byline {
+  margin: 2rem 0 0;
+  font-size: var(--step--1);
+  color: var(--ink-soft);
+}
+
+.resources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.25rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--step--1);
+}
+.resources li + li { border-left: 1px solid var(--rule); padding-left: 1.25rem; }
+
+.masthead::after {
+  content: "";
+  display: block;
+  height: 1px;
+  margin: 3rem 0 0;
+  background: var(--rule);
+}
+
+/* ── Prose ───────────────────────────────────────────────────────────────── */
+article { padding-top: 2.5rem; }
+
+article > p { margin: 0 0 1.4em; text-wrap: pretty; }
+
+/* Opening paragraph gets no indent; later ones are separated by space, not
+   indent, which reads better on screen. */
+h2 {
+  margin: 3rem 0 1rem;
+  font-size: var(--step-2);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+h2::before {
+  content: "";
+  display: block;
+  width: 2.5rem;
+  height: 2px;
+  margin-bottom: 0.9rem;
+  background: var(--accent);
+}
+
+h3 {
+  margin: 2.25rem 0 0.6rem;
+  font-size: var(--step-1);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a:hover { text-decoration-thickness: 2px; }
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+ul, ol { margin: 0 0 1.4em; padding-left: 1.4em; }
+li { margin-bottom: 0.4em; }
+li::marker { color: var(--ink-soft); }
+
+strong { font-weight: 600; }
+
+/* ── Period excerpt ───────────────────────────────────────────────────────
+   For quoting the source texts the ground truth is drawn from.           */
+blockquote {
+  margin: 2rem 0;
+  padding: 1.25rem 1.5rem;
+  background: var(--paper-deep);
+  border-left: 2px solid var(--accent);
+  font-size: var(--step-0);
+}
+blockquote p { margin: 0 0 0.8em; }
+blockquote p:last-of-type { margin-bottom: 0; }
+blockquote cite {
+  display: block;
+  margin-top: 0.8rem;
+  font-size: var(--step--1);
+  font-style: normal;
+  color: var(--ink-soft);
+}
+
+/* ── Figures ─────────────────────────────────────────────────────────────── */
+figure { margin: 2.5rem 0; }
+figure img, figure svg { display: block; width: 100%; height: auto; }
+figcaption {
+  margin-top: 0.75rem;
+  font-size: var(--step--1);
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+/* ── Tables ──────────────────────────────────────────────────────────────── */
+.table-scroll { overflow-x: auto; margin: 2.5rem 0; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+caption {
+  margin-bottom: 0.75rem;
+  font-size: var(--step--1);
+  color: var(--ink-soft);
+  text-align: left;
+}
+th, td { padding: 0.5rem 0.75rem; text-align: right; }
+th:first-child, td:first-child { text-align: left; padding-left: 0; }
+th:last-child, td:last-child { padding-right: 0; }
+thead th {
+  font-weight: 600;
+  border-bottom: 1px solid var(--ink);
+  white-space: nowrap;
+}
+tbody tr + tr td { border-top: 1px solid var(--rule); }
+
+/* ── Sidenote ─────────────────────────────────────────────────────────────
+   Sits in the right margin on wide screens, folds inline on narrow ones.
+   Useful for the asides that would otherwise clutter a paragraph.        */
+.sidenote {
+  display: block;
+  font-size: var(--step--1);
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+@media (min-width: 62rem) {
+  .sidenote {
+    position: absolute;
+    left: calc(var(--measure) + 2.5rem);
+    width: 12rem;
+    margin-top: -0.3rem;
+  }
+  .has-sidenote { position: relative; }
+}
+@media (max-width: 61.999rem) {
+  .sidenote {
+    margin: 1.25rem 0;
+    padding-left: 1rem;
+    border-left: 1px solid var(--rule);
+  }
+}
+
+/* ── Code ────────────────────────────────────────────────────────────────── */
+code {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.85em;
+  background: var(--paper-deep);
+  padding: 0.12em 0.32em;
+  border-radius: 2px;
+}
+pre {
+  margin: 2rem 0;
+  padding: 1.1rem 1.25rem;
+  background: var(--paper-deep);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  overflow-x: auto;
+  font-size: var(--step--1);
+  line-height: 1.55;
+}
+pre code { background: none; padding: 0; font-size: 1em; }
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+footer {
+  max-width: var(--measure);
+  margin: 4rem auto 0;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--rule);
+  font-size: var(--step--1);
+  color: var(--ink-soft);
+}
+footer h2 {
+  margin: 0 0 0.75rem;
+  font-size: var(--step-0);
+  color: var(--ink);
+}
+footer h2::before { display: none; }
+footer p { margin: 0 0 1rem; }
+
+/* ── Print ────────────────────────────────────────────────────────────────
+   People print paper write-ups. Make it behave.                          */
+@media print {
+  body { background: #fff; color: #000; font-size: 11pt; padding: 0; }
+  .wrap, footer { max-width: none; }
+  .wide { margin-left: 0; transform: none; max-width: none; }
+  a { color: #000; text-decoration: none; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 9pt; }
+  .sidenote { position: static; width: auto; }
+  h2, h3 { break-after: avoid; }
+  figure, table, blockquote { break-inside: avoid; }
+}
+</style>
+</head>
+
+<body>
+
+<header class="masthead wrap">
+
+  <!-- The ruler spans 1831–1930: one hairline per year, decades marked. -->
+  <svg class="span-rule" viewBox="0 0 620 46" role="img"
+       aria-label="A timeline spanning the years 1831 to 1930">
+    <defs>
+      <pattern id="year-ticks" width="6.0606" height="46" patternUnits="userSpaceOnUse">
+        <line class="minor" x1="0.5" y1="20" x2="0.5" y2="27"/>
+      </pattern>
+    </defs>
+
+    <rect x="10" y="0" width="600" height="46" fill="url(#year-ticks)"/>
+    <line class="base" x1="10" y1="20" x2="610" y2="20"/>
+
+    <!-- decades 1840 … 1920 -->
+    <g class="major">
+      <line x1="64.5"  y1="14" x2="64.5"  y2="31"/>
+      <line x1="125.2" y1="14" x2="125.2" y2="31"/>
+      <line x1="185.8" y1="14" x2="185.8" y2="31"/>
+      <line x1="246.4" y1="14" x2="246.4" y2="31"/>
+      <line x1="307.0" y1="14" x2="307.0" y2="31"/>
+      <line x1="367.6" y1="14" x2="367.6" y2="31"/>
+      <line x1="428.2" y1="14" x2="428.2" y2="31"/>
+      <line x1="488.8" y1="14" x2="488.8" y2="31"/>
+      <line x1="549.4" y1="14" x2="549.4" y2="31"/>
+    </g>
+
+    <!-- endpoints -->
+    <line class="base" x1="10.5"  y1="10" x2="10.5"  y2="31"/>
+    <line class="base" x1="609.5" y1="10" x2="609.5" y2="31"/>
+    <text x="10"  y="44" text-anchor="start">1831</text>
+    <text x="610" y="44" text-anchor="end">1930</text>
+  </svg>
+
+  <h1>ChronoLogic: measuring what language models know about 1831&ndash;1930</h1>
+
+  <p class="standfirst">
+    A one-paragraph standfirst goes here. Say what the benchmark measures and
+    what surprised you, in plain language &mdash; this is the sentence that
+    decides whether someone reads the rest.
+  </p>
+
+  <p class="byline">Author names &middot; Month 2026</p>
+
+  <ul class="resources">
+    <li><a href="#">Paper</a></li>
+    <li><a href="#">Code</a></li>
+    <li><a href="#">Data</a></li>
+  </ul>
+
+</header>
+
+<article class="wrap">
+
+  <p>
+    Opening paragraph. Lead with the question rather than the contribution:
+    what would you actually like to know about a model, and why is it hard to
+    find out?
+  </p>
+
+  <h2>The problem</h2>
+
+  <p>
+    Body text. The column is capped at roughly sixty-eight characters, which
+    is the part that makes this read like a page rather than a terminal.
+  </p>
+
+  <p class="has-sidenote">
+    A paragraph with a margin note attached. On a wide screen the note sits
+    out to the right; on a phone it folds in underneath with a rule beside it.
+    <span class="sidenote">
+      Sidenotes are good for the caveat that would otherwise derail a
+      sentence. Use them sparingly &mdash; two or three in the whole post.
+    </span>
+  </p>
+
+  <blockquote>
+    <p>
+      An excerpt from a period source, set in its own well. Useful when you
+      want the reader to see the kind of text the ground truth comes from
+      before you explain how it was scored.
+    </p>
+    <cite>Author, <em>Title</em> (1887)</cite>
+  </blockquote>
+
+  <h2>How it works</h2>
+
+  <p>Prose with a list underneath:</p>
+
+  <ul>
+    <li>One point per line, kept short.</li>
+    <li>Another point.</li>
+    <li>A third.</li>
+  </ul>
+
+  <p>And a snippet of the data format, if that helps:</p>
+
+<pre><code>{
+  "question_id": "...",
+  "answer_type": "same_book",
+  "year": 1887
+}</code></pre>
+
+  <h2>Results</h2>
+
+  <div class="table-scroll wide">
+    <table>
+      <caption>Table 1. Replace with your real numbers.</caption>
+      <thead>
+        <tr>
+          <th scope="col">Model</th>
+          <th scope="col">Likelihood</th>
+          <th scope="col">Generation</th>
+          <th scope="col">Overall</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Model A</td><td>00.0</td><td>00.0</td><td>00.0</td></tr>
+        <tr><td>Model B</td><td>00.0</td><td>00.0</td><td>00.0</td></tr>
+        <tr><td>Model C</td><td>00.0</td><td>00.0</td><td>00.0</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <figure class="wide">
+    <!-- Put plots in docs/assets/ and point at them with a relative path. -->
+    <img src="assets/figure-1.png" alt="Describe what the figure shows, for screen readers.">
+    <figcaption>
+      Figure 1. Caption. Say what the reader should take from the plot, not
+      just what is plotted.
+    </figcaption>
+  </figure>
+
+  <h2>What the errors look like</h2>
+
+  <p>Closing sections here.</p>
+
+</article>
+
+<footer class="wrap">
+  <h2>Cite this work</h2>
+<pre><code>@inproceedings{...,
+  title  = {...},
+  author = {...},
+  year   = {2026}
+}</code></pre>
+  <p>
+    Code and data: <a href="#">github.com/yourname/yourrepo</a>
+  </p>
+</footer>
+
+</body>
+</html>
