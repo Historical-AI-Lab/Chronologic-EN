@@ -414,11 +414,11 @@ footer p { margin: 0 0 1rem; }
   </p>
 
   <p>
-    Answering that question took us more than a year. The solution we finally settled on was to locate more than one ground truth answer for 10% of our questions, and use the variation between those answers to estimate the acceptable range of variation for the rest of the dataset.
+    Answering that question took us more than a year. The solution we finally settled on was to locate more than one ground truth answer for 10% of our questions, and use the variation between those answers to estimate the acceptable range of variation for other tricky questions.
   </p>
 
   <p>
-    Along the way, we discovered that multiple choice format largely useless. Advanced models turned out to be much better at recognizing correct answers than at generating them. On the upside, the made automated judging more effective than we had initially expected. A moderately strong judge model can accurately assess the output of models stronger than itself.
+    Along the way, we discovered that multiple choice format is largely useless here. Advanced models turned out to be much better at recognizing correct answers than at generating them, which made multiple choice unrealistically easy. On the upside, this made automated judging more effective than we had initially expected. A moderately strong judge model can accurately assess the output of models stronger than itself.
   </p>
 
 <h2>What we learned</h2>
@@ -428,8 +428,10 @@ footer p { margin: 0 0 1rem; }
   </p>
 
   <p>
-    While we can compare commercial frontier models to period-specific models (like Talkie-1930), it might be better to say that these two classes of tools are attempting different things. Commercial models are definitely better at free-text generation, in part because they can understand complex questions and work through long chains of reasoning. But they cannot, in principle, answer some questions researchers may want to pose, because they don't measure the likelihood of a given response in a given context. Among models capable of reporting a likelihood, Talkie-1930-base is the strongest.
+    While we can also compare commercial frontier models to period-specific models (like Talkie-1930), it might be better to say that these two classes of tools are attempting different things. Commercial models are definitely better at free-text generation, in part because they can understand complex questions and work through long chains of reasoning. But they cannot, in principle, answer some questions researchers may want to pose, because they don't measure the likelihood of a given response in a given context. Among models capable of reporting a likelihood, Talkie-1930-base is the strongest.
   </p>
+
+<h2>The rest of this just illustrates formatting options</h2>
 
   <p class="has-sidenote">
     A paragraph with a margin note attached. On a wide screen the note sits
