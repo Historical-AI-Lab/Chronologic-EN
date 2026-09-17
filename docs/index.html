@@ -392,11 +392,39 @@ footer p { margin: 0 0 1rem; }
   <h2>Why we need a benchmark</h2>
 
   <p>
-    Scholars already know there are reasons to be cautious here. Our record of the past is biased and full of omissions. Reconstructing language may not be the same thing as reconstructing the people who produced it--especially because language models have a tendency to homogenize different perspectives.
+    Scholars already know there are reasons to be cautious here. Our record of the past is biased and full of omissions. Reconstructing language may not be the same thing as reconstructing the people who produced it &mdash; especially because language models have a tendency to homogenize different perspectives.
   </p>
 
   <p>
     What we don't yet have is any way to measure success and failure. We may suspect that commercial language models are caricaturing the past, but our evidence is anecdotal. Flying blind also makes it difficult to improve performance. For instance, several recently-released models (e.g. Talkie-1930) were trained only on sources before a cutoff date in the early twentieth century. How much authenticity is gained by that constraint? What gets lost? and is the trade-off worthwhile?
+  </p>
+
+  <h2>Why benchmarking the past is hard</h2>
+
+  <p>
+    To test mathematical reasoning, we can gather living experts, get them to write questions with known correct answers, and then ask models to take a multiple-choice test.
+  </p>
+
+  <p>
+    None of that is possible, if we want to measure a model's representation of social diversity in the past. There are no living experts we can poll: while historians know a lot about the past, they are not trained to respond exactly like astronomers, fashion writers, and diarists of the 1870s. Instead, we have to extract ground truth answers from period documents. But many questions have multiple valid answers. A single ground truth passage can tell us that <em>one</em> Unitarian writer believed this in 1885. But other Unitarians might have answered the question differently. How can we estimate the <em>penumbra of acceptable variation</em> around each ground truth example?
+  </p>
+
+  <p>
+    Answering that question took us more than a year. The solution we finally settled on was to locate more than one ground truth answer for 10% of our questions, and use the variation between those answers to estimate the acceptable range of variation for the rest of the dataset.
+  </p>
+
+  <p>
+    Along the way, we discovered that multiple choice format largely useless. Advanced models turned out to be much better at recognizing correct answers than at generating them. On the upside, the made automated judging more effective than we had initially expected. A moderately strong judge model can accurately assess the output of models stronger than itself.
+  </p>
+
+<h2>What we learned</h2>
+
+  <p>
+    The most important thing we found may be that models have been getting better at representing the past. This is somewhat surprising, because we've had no benchmarks in this space, and it hasn't &mdash; as far as we know &mdash; been a major focus of commercial research. But we do see dramatic improvement. Scores on constrained generation, for instance, increase from 26% in August 2024 (GPT-4o) to 72% in August 2026 (GPT-5.6). Full explanation of the improvement will take more research, but the data we see so far are consistent with a hypothesis that general improvements in reasoning also make models better at ventriloquizing the past.
+  </p>
+
+  <p>
+    While we can compare commercial frontier models to period-specific models (like Talkie-1930), it might be better to say that these two classes of tools are attempting different things. Commercial models are definitely better at free-text generation, in part because they can understand complex questions and work through long chains of reasoning. But they cannot, in principle, answer some questions researchers may want to pose, because they don't measure the likelihood of a given response in a given context. Among models capable of reporting a likelihood, Talkie-1930-base is the strongest.
   </p>
 
   <p class="has-sidenote">
