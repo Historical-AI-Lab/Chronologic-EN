@@ -403,14 +403,18 @@ footer p { margin: 0 0 1rem; }
     What we don't yet have is any way to measure success and failure. We may suspect that commercial language models are caricaturing the past, but our evidence is anecdotal. Flying blind also makes it difficult to improve performance. For instance, several recently-released models (e.g. Talkie-1930) were trained only on sources before a cutoff date in the early twentieth century. How much authenticity is gained by that constraint? What gets lost? and is the trade-off worthwhile?
   </p>
 
+  <p>
+    We believe measuring representation of the past &mdash; in the sense that matters to researchers &mdash; is very difficult. If we were just testing factual knowledge <em>about</em> the past, it might be straightforward: a benchmark of that kind could cover many centuries at once. Testing the model's ability to respond <em>like</em> a writer from the past is much harder. The benchmark we present here only covers one century (1830-1931), in one language (English), but took us a year to construct.
+  </p>
+
   <h2>Why benchmarking the past is hard</h2>
 
   <p>
-    To test mathematical reasoning, we can gather living experts, get them to write questions with known correct answers, and then ask models to take a multiple-choice test.
+    To test mathematical reasoning, we can gather living experts, get them to write questions with known correct answers, and then give models a multiple-choice test.
   </p>
 
   <p>
-    None of that is possible, if we want to measure a model's representation of social diversity in the past. There are no living experts we can poll: while historians know a lot about the past, they are not trained to respond exactly like astronomers, fashion writers, and diarists of the 1870s. Instead, we have to extract ground truth answers from period documents. But many questions have multiple valid answers. A single ground truth passage can tell us that <em>one</em> Unitarian writer believed this in 1885. But other Unitarians might have answered the question differently. How can we estimate the <em>penumbra of acceptable variation</em> around each ground truth example?
+    None of that is possible if we want to measure representation of social diversity in the past. There are no living experts we can poll: while historians know a lot about the past, they are not trained to respond exactly like astronomers, fashion writers, and diarists of the 1870s. Instead, we have to extract ground truth answers from period documents. But many questions have multiple valid answers. A single ground truth passage can tell us that <em>one</em> Unitarian writer believed this in 1885. But other Unitarians might have answered the question differently. How can we estimate the <em>penumbra of acceptable variation</em> around each ground truth example?
   </p>
 
   <p>
@@ -428,8 +432,15 @@ footer p { margin: 0 0 1rem; }
   </p>
 
   <p>
-    While we can also compare commercial frontier models to period-specific models (like Talkie-1930), it might be better to say that these two classes of tools are attempting different things. Commercial models are definitely better at free-text generation, in part because they can understand complex questions and work through long chains of reasoning. But they cannot, in principle, answer some questions researchers may want to pose, because they don't measure the likelihood of a given response in a given context. Among models capable of reporting a likelihood, Talkie-1930-base is the strongest.
+    While we can also compare commercial frontier models to period-specific models (like Talkie-1930), it might be better to say that these two classes of tools are attempting different things. Commercial models are definitely better at free-text generation, in part because they can understand complex questions and work through long chains of reasoning. But they cannot, in principle, answer some questions researchers want to pose, because they don't measure the likelihood of a given response in a given context. Among models capable of reporting a likelihood, Talkie-1930-base is the strongest.
   </p>
+
+<h2>What happens next</h2>
+
+  <p>
+    None of the models we tested are.
+  </p>
+
 
 <h2>The rest of this just illustrates formatting options</h2>
 
