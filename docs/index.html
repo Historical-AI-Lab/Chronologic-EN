@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
 
 <!-- ═══ EDIT ME ═══════════════════════════════════════════════════════════ -->
 <title>Chronologic-EN: how well can language models represent the past?</title>
@@ -19,7 +20,11 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<!-- Runner-up: swap the link above and the body font-family below for a cleaner,
+     still lighter than Spectral, but less calligraphic and sturdier on low-DPI screens:
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+     ...and set  font-family: "Source Serif 4", Georgia, serif;  on body and .span-rule text. -->
 
 <style>
 /* ───────────────────────────────────────────────────────────────────────────
@@ -28,6 +33,8 @@
    in use across the whole 1831–1930 window) for rules, links and marks.
    ─────────────────────────────────────────────────────────────────────── */
 :root {
+  color-scheme: light;      /* light only: no dark-mode inversion */
+
   --paper:      #faf6ec;
   --paper-deep: #f2ebda;   /* excerpt wells, table stripes */
   --ink:        #2b2621;
@@ -38,23 +45,12 @@
   --measure:    34rem;     /* body column — roughly 68 characters */
   --measure-wide: 46rem;   /* figures and tables may break out to this */
 
-  --step--1: 0.875rem;
-  --step-0:  1.0625rem;
-  --step-1:  1.25rem;
-  --step-2:  1.5rem;
-  --step-3:  2rem;
-  --step-4:  2.75rem;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper:      #1c1916;
-    --paper-deep: #262119;
-    --ink:        #eae2d2;
-    --ink-soft:   #9d9384;
-    --accent:     #8fb6d1;
-    --rule:       #3d372e;
-  }
+  --step--1: 0.9375rem;
+  --step-0:  1.1875rem;
+  --step-1:  1.375rem;
+  --step-2:  1.625rem;
+  --step-3:  2.125rem;
+  --step-4:  2.875rem;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -66,11 +62,14 @@ body {
   padding: 0 1.5rem 6rem;
   background: var(--paper);
   color: var(--ink);
-  font-family: Spectral, Georgia, "Times New Roman", serif;
+  font-family: "EB Garamond", Georgia, "Times New Roman", serif;
   font-size: var(--step-0);
   font-weight: 400;
-  line-height: 1.68;          /* serif body gets a little extra leading */
-  font-feature-settings: "onum" 1, "kern" 1;
+  line-height: 1.62;          /* Garamond sets looser than Spectral; pull it in */
+  font-feature-settings: "kern" 1;
+  /* "onum" was requested here before, but Google Fonts strips onum/lnum from the
+     subsets it serves, so it never did anything. These figures are lining. For real
+     oldstyle figures you would have to self-host the full EB Garamond release. */
   text-rendering: optimizeLegibility;
 }
 
@@ -100,8 +99,8 @@ body {
 .span-rule .base  { stroke: var(--ink); stroke-width: 1; }
 .span-rule text {
   fill: var(--ink-soft);
-  font-family: Spectral, Georgia, serif;
-  font-size: 11px;
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: 12px;
   font-variant-numeric: lining-nums;
 }
 
@@ -110,7 +109,7 @@ h1 {
   font-size: var(--step-4);
   font-weight: 600;
   line-height: 1.12;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.005em;
   text-wrap: balance;
 }
 
@@ -118,7 +117,7 @@ h1 {
   margin: 1.25rem 0 0;
   font-size: var(--step-1);
   font-style: italic;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.5;
   color: var(--ink-soft);
   text-wrap: pretty;
@@ -367,7 +366,7 @@ footer p { margin: 0 0 1rem; }
     Researchers would like to study the past. Ordinary people would like to converse with it. Can language models help in either case?
   </p>
 
-  <p class="byline">Author names &middot; Month 2026</p>
+  <p class="byline">Ted Underwood, Ziliang Qiu, Sarah Griebel, Laura K. Nelson, Edwin Roland, Wenyi Shang, Matthew Wilkens &middot; September 2026</p>
 
   <ul class="resources">
     <li><a href="#">Paper</a></li>
@@ -404,7 +403,7 @@ footer p { margin: 0 0 1rem; }
   </p>
 
   <p>
-    Why don't we have a benchmark for this yet? Well, while testing factual knowledge <em>about</em> the past might be a fairly simple task, testing a model's ability to respond <em>like</em> a writer from the past is harder. The benchmark we present here only covers one century (1830-1931), in one language (English), but took us a year to construct.
+    Why don't we have a benchmark for this yet? Well, while testing factual knowledge <em>about</em> the past might be a fairly simple task, testing a model's ability to respond <em>like</em> a writer from the past is harder. The benchmark we present here only covers one century (1831-1930), in one language (English), but took us a year to construct.
   </p>
 
   <h2>Why representation of the past is hard to measure</h2>
