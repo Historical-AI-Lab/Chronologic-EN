@@ -221,6 +221,13 @@ figcaption {
   line-height: 1.5;
   color: var(--ink-soft);
 }
+/* A figure may break out to --measure-wide, but its caption is prose: hold it
+   to the body measure and centre it, so it lines up with the text column. */
+.wide figcaption {
+  max-width: var(--measure);
+  margin-left: auto;
+  margin-right: auto;
+}
 
 /* ── Tables ──────────────────────────────────────────────────────────────── */
 .table-scroll { overflow-x: auto; margin: 2.5rem 0; }
