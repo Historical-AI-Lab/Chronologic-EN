@@ -414,7 +414,11 @@ footer p { margin: 0 0 1rem; }
   </p>
 
   <p>
-    None of that is possible if we want to measure representation of social diversity in the past. There are no living experts we can poll: while historians know a lot about the past, they are not trained to respond exactly like astronomers, fashion writers, and diarists of the 1870s. Instead, we have to extract ground truth answers from period documents. But many questions have multiple valid answers. A single ground truth passage can tell us that <em>one</em> Unitarian writer believed this in 1885. But other Unitarians might have answered the question differently. How can we estimate the <em>penumbra of acceptable variation</em> around each ground truth example?
+    None of that is possible if we want to measure representation of social diversity in the past. There are no living experts we can poll: while historians know a lot about the past, they are not trained to respond exactly like astronomers, fashion writers, and diarists of the 1870s. Instead, we have to extract ground truth answers from period documents. We pair each question with a "metadata frame" that indicates the period and genre of the text, and often the social position of the writer, to specify whose attitudes are being represented.
+  </p>
+
+  <p>
+    But even with social context specified, many questions have multiple valid answers. A ground truth answer can tell us that <em>one</em> Unitarian writer believed this in 1885. But other Unitarians might have answered the question differently. How can we estimate the <em>penumbra of acceptable variation</em> around each ground truth example?
   </p>
 
   <p>
@@ -442,11 +446,15 @@ footer p { margin: 0 0 1rem; }
   </p>
 
   <p>
-    Models trained only on period text struggle with a wide range of questions. In part this is because they haven't been trained to follow complex instructions as extensively as commercial models. But it's also true, as Benjamin Breen has pointed out, that removing texts after 1930 doesn't in itself give a model a <em>specific</em> historical perspective. Talkie-1930 kind of floats across a long timeline, occupying a more diffuse vantage point than any living human being ever did.
+    Models trained only on period text struggle with a wider range of questions. In part this is because they haven't been trained to follow complex instructions as extensively as commercial models. But it's also true, as Benjamin Breen has pointed out, that removing texts after 1930 doesn't in itself give a model a <em>specific</em> historical perspective. Talkie-1930 kind of floats across a long timeline, occupying a more diffuse vantage point than any living human being ever did.
+  </p>
+
+ <p>
+    Once language models can reliably represent specific points of view, the next question to ask will be whose points of view they represent, and who has been left out. But at the moment, models still confront a more fundamental challenge. Open-weight models aren't reliably representing <em>anyone's</em> perspective; they tend to produce a kind of averaged, context-free voice. Frontier reasoning models can do better, but still fail through self-consciousness: overplaying a role in ways that telegraph a twenty-first-century understanding of its limitations.
   </p>
 
   <p>
-    Teaching models to reproduce the specificity, and variability, of actual human writers is one of the key challenges that will have to be addressed before language models become reliable tools for historical research &mdash; or fully satisfying conversation partners, for that matter.
+    Teaching language models to reproduce the limited and variable points of view that typify actual human writers is the first challenge that will have to be addressed before they can be reliable tools for historical research &mdash; or fully satisfying conversation partners, for that matter. Our benchmark is designed to measure progress toward that goal, but we will likely have to keep refreshing it and making it harder. We also hope to see other benchmarks emerge, measuring representation of other periods and languages. We're standing at the beginning of a long journey.
   </p>
 
 <h2>The rest of this just illustrates formatting options</h2>
