@@ -229,6 +229,16 @@ figcaption {
   margin-right: auto;
 }
 
+/* ── References ───────────────────────────────────────────────────────────
+   Set smaller and softer than body prose, like the captions.             */
+.references p {
+  margin: 0 0 0.8em;
+  font-size: var(--step--1);
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+.references cite { font-style: italic; }
+
 /* ── Tables ──────────────────────────────────────────────────────────────── */
 .table-scroll { overflow-x: auto; margin: 2.5rem 0; }
 
@@ -387,7 +397,7 @@ footer p { margin: 0 0 1rem; }
 <article class="wrap">
 
   <p>
-    Historians and social scientists face a fundamental constraint: history only happens once. We cannot rerun the French Revolution, or survey past populations to understand variations in their opinions. Language models excite researchers because they seem to open a new avenue of inquiry that gets around this constraint. If we had a model that represented the space of probability governing a period's writing, historians could for the first time run reproducible experiments:
+    Historians and social scientists face a fundamental constraint: history only happens once. We cannot rerun the French Revolution, or survey past populations to understand variations in their opinions. Language models excite researchers because they seem to open a new avenue of inquiry that gets around this constraint. If we had a model that represented the space of probability governing a period's writing (a big <em>if</em>!), historians could for the first time run reproducible experiments:
   </p>
 
   <ul>
@@ -405,13 +415,11 @@ footer p { margin: 0 0 1rem; }
   <p>
     Scholars already know there are reasons to be cautious here. Our record of the past is biased and full of omissions. And reconstructing language is not the same thing as reconstructing the people who produced it &mdash; especially because language models have a tendency to homogenize different perspectives.
   </p>
-
   <p>
-    What we don't yet have is a way to measure success or failure. We may suspect that commercial language models are caricaturing the past, but our evidence is anecdotal. Flying blind also makes it difficult to improve performance. For instance, several recently-released models (e.g. Talkie-1930) were trained only on sources before a cutoff date in the early twentieth century. Does that limitation improve authenticity? What gets lost? and is the trade-off worthwhile? It's hard to say.
+    What we don't yet have is a way to measure success or failure. We may suspect that commercial language models are caricaturing the past, but our evidence is anecdotal. Flying blind also makes it difficult to improve performance. For instance, several recently-released models (e.g. <a href="https://talkie-lm.com/introducing-talkie">Talkie-1930</a>) were trained only on sources before a cutoff date in the early twentieth century. Does that limitation improve authenticity? What gets lost? Is the trade-off worthwhile? It's hard to say.
   </p>
-
   <p>
-    Why don't we have a benchmark for this yet? Well, while testing factual knowledge <em>about</em> the past might be a fairly simple task, testing a model's ability to respond <em>like</em> a writer from the past is harder. The benchmark we present here only covers one century (1831-1930), in one language (English), but took us a year to construct.
+    Why is there no benchmark for historical representation yet? While testing factual knowledge <em>about</em> the past might be a fairly simple task, testing a model's ability to respond <em>like</em> a writer from the past is harder. The benchmark we present here only covers one century (1831-1930), in one language (English), but took us a year to construct.
   </p>
 
   <h2>Why representation of the past is hard to measure</h2>
@@ -419,58 +427,58 @@ footer p { margin: 0 0 1rem; }
   <p>
     To test mathematical reasoning, or factual knowledge about history for that matter, we can gather living experts, get them to write questions with known correct answers, and then give models a multiple-choice test.
   </p>
-
   <p>
     None of that is possible if we want to measure a model's ability to speak from a vantage point located in the past. There are no living experts we can poll to get correct answers: while historians know a lot about the past, they are not trained to respond like astronomers, fashion writers, and diarists of the 1870s. Instead, we have to extract ground truth answers from period documents. We pair each question with a "metadata frame" that indicates the period and genre of the text, and often the social position of the writer, to specify whose attitudes are being represented.
   </p>
-
   <p>
     But even with social context specified, many questions have multiple valid answers. A ground truth answer can tell us that <em>one</em> Unitarian writer believed this in 1885. But other Unitarians might have answered the question differently. How can we estimate the <em>penumbra of acceptable variation</em> around each ground truth example?
   </p>
-
   <p>
-    Answering that question took us more than a year. The solution we finally settled on was to locate more than one ground truth answer for 10% of our questions, and use comparisons between multiple ground truths and strong distractors to estimate the acceptable range of variation for other tricky questions.
+    Answering that question took us more than a year. The solution we finally settled on was to locate more than one ground truth answer for 10% of our questions, and use the variance between ground truths to estimate the acceptable range of variation for other tricky questions. (We measure variation in answer quality in a space of Elo-like latent strengths determined by pairwise comparisons between answer options; see <a href="#">section 5.2 of the paper for a full description of the method</a>.)
+  </p>
+  <p>
+    Along the way, we discovered that multiple choice format is largely useless here. Reasoning models turned out to be much better at recognizing correct answers than at generating them, which made multiple choice unrealistically easy. On the upside, this made automated judging more effective than we had initially expected. A moderately strong reasoning model can accurately judge the output of models stronger than itself.
   </p>
 
-  <p>
-    Along the way, we discovered that multiple choice format is largely useless here. Advanced models turned out to be much better at recognizing correct answers than at generating them, which made multiple choice unrealistically easy. On the upside, this made automated judging more effective than we had initially expected. A moderately strong judge model can accurately assess the output of models stronger than itself.
-  </p>
-
-<h2>What we learned</h2>
+  <h2>What we learned</h2>
 
   <p>
-    The most important thing we found may be that models have been getting better at representing the past. This is somewhat surprising, because we've had no benchmarks in this space, and it hasn't &mdash; as far as we know &mdash; been a major focus of commercial research. But we do see dramatic improvement. Scores on constrained generation, for instance, increase from 26% in August 2024 (GPT-4o) to 72% in August 2026 (GPT-5.6). Full explanation of the improvement will take more research, but the data we see so far are consistent with a hypothesis that general improvements in reasoning also make models better at ventriloquizing the past.
+    The most important thing we found may be that models have been getting better at representing the past. This is somewhat surprising, because we've had no benchmarks in this space, and it hasn't &mdash; as far as we know &mdash; been a major focus of commercial research. But we do see dramatic improvement. Scores on the part of the benchmark that asks models to generate text for a specific genre and social context, for instance, increase from 26% in August 2024 (GPT-4o) to 72% in August 2026 (GPT-5.6). See <a href="#">section 6 of the paper for other results.</a> Full explanation of the improvement will take more research, but the data we see so far are consistent with a hypothesis that general improvements in reasoning also make models better at ventriloquizing the past.
   </p>
 
-<figure class="wide">
-    <!-- Put plots in docs/assets/ and point at them with a relative path. -->
-    <img src="assets/figure-1.png" alt="Horizontal bar chart comparing six language models on the Chronologic-EN generation score, plotted against the full 0 to 100 range of the benchmark. Bars are ordered from lowest score at the bottom to highest at the top: Qwen 72B it, 20.2; GPT-4o, 26.0; Talkie 1930 13B it, 32.9; GPT-4.1, 44.0; Kimi K3, 66.6; and GPT-6 Astra, 71.4. The two most recent frontier models lead by a wide margin, roughly doubling the scores of the oldest models tested. Talkie 1930 13B it, the period-specific model trained only on text from before 1930, falls in the middle of the group, ahead of GPT-4o and Qwen 72B it but well behind GPT-4.1, Kimi K3 and GPT-6 Astra. Every model scores below 72, leaving more than a quarter of the scale unclaimed.">
-    <figcaption>
-      Figure 1. Free-text evaluation of answers to character modeling and constrained generation questions.This is just one of several scores Chronologic-EN can produce; we focus on it here because it's both the hardest test and the one most relevant to simulation of the past. Frontier models reach 72%; Talkie-1930 is stronger than several larger competitors, but still falls short of the frontier.
-    </figcaption>
+  <figure class="wide">
+  <!-- Put plots in docs/assets/ and point at them with a relative path. -->
+  <img src="assets/figure-1.png" alt="Horizontal bar chart comparing six language models on the Chronologic-EN generation score, plotted against the full 0 to 100 range of the benchmark. Bars are ordered from lowest score at the bottom to highest at the top: Qwen 72B it, 20.2; GPT-4o, 26.0; Talkie 1930 13B it, 32.9; GPT-4.1, 44.0; Kimi K3, 66.6; and GPT-6 Astra, 71.4. The two most recent frontier models lead by a wide margin, roughly doubling the scores of the oldest models tested. Talkie 1930 13B it, the period-specific model trained only on text from before 1930, falls in the middle of the group, ahead of GPT-4o and Qwen 72B it but well behind GPT-4.1, Kimi K3 and GPT-6 Astra. Every model scores below 72, leaving more than a quarter of the scale unclaimed.">
+  <figcaption>
+  Figure 1. Free-text evaluation of answers to character modeling and constrained generation questions. This is just one of several scores Chronologic-EN can produce; we focus on it here because it's both the hardest test and the one most relevant to simulation of the past. Frontier models reach 72%; Talkie-1930 is stronger than several larger competitors, but still falls short of the frontier.
+  </figcaption>
   </figure>
 
   <p>
     While we can also compare commercial frontier models to period-specific models (like Talkie-1930), it might be better to say that these two classes of tools are attempting different things. Commercial models are definitely better at free-text generation, in part because they can understand complex questions and work through long chains of reasoning. But they cannot, in principle, answer some questions researchers want to pose, because they don't measure the likelihood of a given response in a given context. Among models capable of reporting a likelihood, Talkie-1930-base is the strongest.
   </p>
 
-<h2>What happens next</h2>
+  <h2>What happens next</h2>
 
   <p>
-    None of the models we tested are perfectly reliable. Commercial frontier models are not challenged by knowledge questions, and are surprisingly good at matching their responses to the prose style of a given decade. But they still struggle with questions that ask them to respond like a writer (or a fictional character) in a specific social context.
+    None of the models we tested are perfectly reliable. Commercial frontier models are not challenged by knowledge questions, and are surprisingly good at matching their responses to the prose style of a given decade. But they still struggle with questions that ask them to respond like a writer (or fictional character) in a specific social context.
   </p>
-
   <p>
-    Models trained only on period text struggle with a wider range of questions. In part this is because they haven't been trained to follow complex instructions as extensively as commercial models. But it's also true, as Benjamin Breen has pointed out, that removing texts after 1930 doesn't in itself give a model a <em>specific</em> historical perspective. Talkie-1930 floats across a long timeline, occupying a more diffuse vantage point than any living human being ever did.
+    Models trained only on period text struggle with a wider range of questions. In part this is because they haven't been trained to follow complex instructions as extensively as commercial models. But it's also true, as <a href="https://resobscura.substack.com/p/are-vintage-llms-the-start-of-a-new">Benjamin Breen has pointed out,</a> that removing texts after 1930 doesn't in itself give a model a <em>specific</em> historical perspective. Talkie-1930 floats across a long timeline, occupying a more diffuse vantage point than any living human being ever did.
   </p>
-
- <p>
-    Once language models can reliably represent specific points of view, it will make sense to ask whose points of view they represent, and who has been left out. But at the moment, models still confront a more fundamental challenge. Open-weight models aren't reliably representing <em>anyone's</em> perspective; they tend to produce a kind of averaged, context-free voice. Frontier reasoning models can do better, but still fail through excess self-consciousness: overplaying a role in ways that telegraph a twenty-first-century understanding of its limitations.
+  <p>
+    Once language models can reliably represent specific points of view, it will make sense to ask whose points of view they represent, and who has been left out. But at the moment, models still confront a more fundamental challenge. Open-weight models aren't reliably representing <em>anyone's</em> perspective; they tend to produce a kind of averaged, context-free voice. Frontier reasoning models can do better, but still fail through excess self-consciousness: often overplaying a role in ways that telegraph a twenty-first-century understanding of its limitations.
   </p>
-
   <p>
     Teaching language models to reproduce the limited and variable points of view that typify actual human writers is the first challenge that will have to be addressed before they can be reliable tools for historical research &mdash; or fully satisfying conversation partners, for that matter. Our benchmark is designed to measure progress toward that goal, but we will likely have to keep refreshing it and making it harder. We also hope to see other benchmarks emerge, measuring representation of other periods and languages. Chronologic-EN-1.0 is only one initial step in what we hope will be a long journey.
   </p>
+
+  <h2>References</h2>
+
+  <div class="references">
+    <p>Benjamin Breen, <a href="https://resobscura.substack.com/p/are-vintage-llms-the-start-of-a-new">“Are ‘vintage LLMs’ the start of a new humanistic field?”</a>, <cite>Res Obscura</cite>, April 2026.</p>
+    <p>Nick Levine, David Duvenaud, Alec Radford, <a href="https://talkie-lm.com/introducing-talkie">“Introducing talkie: a 13B vintage language model from 1930,”</a> April 2026.</p>
+  </div>
 
 <h2>The rest of this just illustrates formatting options</h2>
 
