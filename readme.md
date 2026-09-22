@@ -7,7 +7,7 @@ Chronologic-EN-1.0 is a benchmark that measures language models' ability to resp
 English-language writers located in specified social and historical contexts between 1831
 and 1930.
 
-For the paper, see URL.
+For the paper, see [https://arxiv.org/abs/2609.23178](https://arxiv.org/abs/2609.23178).
 
 The benchmark contains 866 questions drawn from 187 sources, listed in
 [`booksample/primary_metadata.csv`](booksample/primary_metadata.csv). Every question comes
@@ -161,12 +161,14 @@ Citation
 --------
 
 ```bibtex
-@misc{chronologic2026,
-  title  = {Chronologic-EN: Measuring the Ability to Represent the Past},
-  author = {Underwood, Ted and Qiu, Ziliang and Griebel, Sarah and
-            Nelson, Laura K. and Roland, Teddy and Shang, Wenyi and
-            Wilkens, Matthew},
-  year   = {2026}
+@misc{underwood2026chronologicmeasuringlanguagemodels,
+      title={Chronologic: Measuring Language Models' Ability to Represent the Past}, 
+      author={Ted Underwood and Ziliang Qiu and Sarah Griebel and Laura K. Nelson and Edwin Roland and Wenyi Shang and Matthew Wilkens},
+      year={2026},
+      eprint={2609.23178},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2609.23178}, 
 }
 ```
 
