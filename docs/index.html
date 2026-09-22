@@ -387,9 +387,9 @@ footer p { margin: 0 0 1rem; }
   <p class="byline">Ted Underwood, Ziliang Qiu, Sarah Griebel, Laura K. Nelson, Edwin Roland, Wenyi Shang, Matthew Wilkens &middot; September 2026</p>
 
   <ul class="resources">
-    <li><a href="#">Paper</a></li>
-    <li><a href="#">Code</a></li>
-    <li><a href="#">Data</a></li>
+    <li><a href="https://arxiv.org/abs/2609.23178">Paper</a></li>
+    <li><a href="https://github.com/Historical-AI-Lab/Chronologic-EN/tree/main">Github</a></li>
+    <li><a href="https://huggingface.co/chronologic">HF repo</a></li>
   </ul>
 
 </header>
@@ -407,7 +407,7 @@ footer p { margin: 0 0 1rem; }
   </ul>
 
   <p>
-    Meanwhile, people who aren't researchers just like the idea of having a conversation with another era. What does a voice from the past sound like? How does it respond to new ideas?
+    Meanwhile, people who aren't historians just like the idea of having a conversation with another era. What does a voice from the past sound like? How does it respond to new ideas?
   </p>
 
   <h2>Why a benchmark is needed</h2>
@@ -428,13 +428,13 @@ footer p { margin: 0 0 1rem; }
     To test mathematical reasoning, or factual knowledge about history for that matter, we can gather living experts, get them to write questions with known correct answers, and then give models a multiple-choice test.
   </p>
   <p>
-    None of that is possible if we want to measure a model's ability to speak from a vantage point located in the past. There are no living experts we can poll to get correct answers: while historians know a lot about the past, they are not trained to respond like astronomers, fashion writers, and diarists of the 1870s. Instead, we have to extract ground truth answers from period documents. We pair each question with a "metadata frame" that indicates the period and genre of the text, and often the social position of the writer, to specify whose attitudes are being represented.
+    None of that is possible if we want to measure a model's ability to speak from a vantage point located in the past. There are no living experts we can poll to get correct answers: while historians know a lot about the past, they are not trained to respond like astronomers, fashion writers, and diarists of the 1870s. Instead, we have to extract ground truth answers from period documents. The differences between answers are often the interesting part, so we pair each question with a "metadata frame" that indicates the period and genre of the text, and often the social position of the writer, to specify whose attitudes are being represented.
   </p>
   <p>
     But even with social context specified, many questions have multiple valid answers. A ground truth answer can tell us that <em>one</em> Unitarian writer believed this in 1885. But other Unitarians might have answered the question differently. How can we estimate the <em>penumbra of acceptable variation</em> around each ground truth example?
   </p>
   <p>
-    Answering that question took us more than a year. The solution we finally settled on was to locate more than one ground truth answer for 10% of our questions, and use the variance between ground truths to estimate the acceptable range of variation for other tricky questions. (We measure variation in answer quality in a space of Elo-like latent strengths determined by pairwise comparisons between answer options; see <a href="#">section 5.2 of the paper for a full description of the method</a>.)
+    Answering that question took us more than a year. The solution we finally settled on was to locate more than one ground truth answer for 10% of our questions, and use the variance between ground truths to estimate the acceptable range of variation for other tricky questions. (We measure variation in answer quality in a space of Elo-like latent strengths determined by pairwise comparisons between answer options; see <a href="https://arxiv.org/abs/2609.23178">section 5.2 of the paper for a full description of the method</a>.)
   </p>
   <p>
     Along the way, we discovered that multiple choice format is largely useless here. Reasoning models turned out to be much better at recognizing correct answers than at generating them, which made multiple choice unrealistically easy. On the upside, this made automated judging more effective than we had initially expected. A moderately strong reasoning model can accurately judge the output of models stronger than itself.
@@ -443,7 +443,7 @@ footer p { margin: 0 0 1rem; }
   <h2>Where models stand</h2>
 
   <p>
-    The other important thing we found is that models have been getting better at representing the past. This is somewhat surprising, because we've had no benchmarks in this space, and it hasn't &mdash; as far as we know &mdash; been a major focus of commercial research. But we do see dramatic improvement. Scores on the part of the benchmark that asks models to generate text for a specific genre and social context, for instance, increase from 26% in August 2024 (GPT-4o) to 72% in August 2026 (GPT-5.6). See <a href="#">section 6 of the paper for other results.</a> Full explanation of the improvement will take more research, but the data we see so far are consistent with a hypothesis that general improvements in reasoning also make models better at ventriloquizing the past.
+    The other important thing we found is that models have been getting better at representing the past. This is somewhat surprising, because we've had no benchmarks in this space, and it hasn't &mdash; as far as we know &mdash; been a major focus of commercial research. But we do see dramatic improvement. Scores on the part of the benchmark that asks models to generate text for a specific genre and social context, for instance, increase from 26% in August 2024 (GPT-4o) to 72% in August 2026 (GPT-5.6). See <a href="https://arxiv.org/abs/2609.23178">section 6 of the paper for other results.</a> Full explanation of the improvement will take more research, but the data we see so far are consistent with a hypothesis that general improvements in reasoning also make models better at ventriloquizing the past.
   </p>
 
   <figure class="wide">
@@ -479,83 +479,6 @@ footer p { margin: 0 0 1rem; }
     <p>Benjamin Breen, <a href="https://resobscura.substack.com/p/are-vintage-llms-the-start-of-a-new">“Are ‘vintage LLMs’ the start of a new humanistic field?”</a>, <cite>Res Obscura</cite>, April 2026.</p>
     <p>Nick Levine, David Duvenaud, Alec Radford, <a href="https://talkie-lm.com/introducing-talkie">“Introducing talkie: a 13B vintage language model from 1930,”</a> April 2026.</p>
   </div>
-
-<h2>The rest of this just illustrates formatting options</h2>
-
-  <p class="has-sidenote">
-    A paragraph with a margin note attached. On a wide screen the note sits
-    out to the right; on a phone it folds in underneath with a rule beside it.
-    <span class="sidenote">
-      Sidenotes are good for the caveat that would otherwise derail a
-      sentence. Use them sparingly &mdash; two or three in the whole post.
-    </span>
-  </p>
-
-  <blockquote>
-    <p>
-      An excerpt from a period source, set in its own well. Useful when you
-      want the reader to see the kind of text the ground truth comes from
-      before you explain how it was scored.
-    </p>
-    <cite>Author, <em>Title</em> (1887)</cite>
-  </blockquote>
-
-  <h2>How it works</h2>
-
-  <p>Prose with a list underneath:</p>
-
-  <ul>
-    <li>One point per line, kept short.</li>
-    <li>Another point.</li>
-    <li>A third.</li>
-  </ul>
-
-  <p>And a snippet of the data format, if that helps:</p>
-
-<pre><code>{
-  "question_id": "...",
-  "answer_type": "same_book",
-  "year": 1887
-}</code></pre>
-
-  <h2>Results</h2>
-
-  <div class="table-scroll wide">
-    <table>
-      <caption>Table 1. Replace with your real numbers.</caption>
-      <thead>
-        <tr>
-          <th scope="col">Model</th>
-          <th scope="col">Likelihood</th>
-          <th scope="col">Generation</th>
-          <th scope="col">Overall</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>Model A</td><td>00.0</td><td>00.0</td><td>00.0</td></tr>
-        <tr><td>Model B</td><td>00.0</td><td>00.0</td><td>00.0</td></tr>
-        <tr><td>Model C</td><td>00.0</td><td>00.0</td><td>00.0</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h2>What the errors look like</h2>
-
-  <p>Closing sections here.</p>
-
-</article>
-
-<footer class="wrap">
-  <h2>Cite this work</h2>
-<pre><code>@inproceedings{...,
-  title  = {...},
-  author = {...},
-  year   = {2026}
-}</code></pre>
-  <p>
-    Code and data: <a href="#">github.com/yourname/yourrepo</a>
-  </p>
-</footer>
 
 </body>
 </html>
