@@ -54,3 +54,7 @@ booksample/averybooks.tar.gz
 booksample/benchmarkbooks/
 booksample/edgebooks/
 booksample/IDI_sample_1875-25/
+
+# --- manim render output (regenerable) ---
+modelasjudge/animation/media/
+modelasjudge/animation/sounds/
