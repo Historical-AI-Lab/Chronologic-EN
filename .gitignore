@@ -58,3 +58,6 @@ booksample/IDI_sample_1875-25/
 # --- manim render output (regenerable) ---
 modelasjudge/animation/media/
 modelasjudge/animation/sounds/
+
+# --- per-question eval reports: print every question and its ground truth ---
+evalcode/**/eval_report_*.md

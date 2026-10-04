@@ -9,7 +9,7 @@ paper reports, with machine-specific paths removed.
 
 ```
 results/
-  likelihood/     leaderboard_1.0.{csv,md,tex}    <- paper Table 1
+  likelihood/     leaderboard_1.0.{csv,md,tex}    <- paper Table 1, + Gemma 4 31B
   freegen/
     free_gen_results_1.0.csv                      <- paper Table 2
     chronologic_scores_1.0.csv                    <- the full scoring ledger
@@ -93,8 +93,8 @@ leaderboard is published here.
 ## Reproducing
 
 `free_gen_results_1.0.csv` is derived from the ledger: the three `grp_*_score`
-columns scaled to percentages, plus the three style columns as-is. Table 1 comes
-from `leaderboard_1.0.csv` unchanged.
+columns scaled to percentages, plus the three style columns as-is. Table 1 is
+`leaderboard_1.0.csv` minus the Gemma 4 31B row, which was scored after the paper.
 
 To rescore a model yourself you need the frozen instruments — judge reliability,
 Bradley-Terry anchors, and the calibration draws — which are committed under

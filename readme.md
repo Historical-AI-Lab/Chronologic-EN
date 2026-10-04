@@ -76,8 +76,8 @@ python evalcode/benchmark_evaluation.py Qwen/Qwen2.5-7B-Instruct \
 Add `--mcq` for the multiple-choice framing, `--device cpu|cuda|mps` to override
 detection, `--quantize int4` to fit a large model on one GPU, or
 `--api together|openrouter|openai` to score a hosted model. A report lands beside the
-input JSONL. Published results for the seven models in the paper's Table 1 are in
-[`results/likelihood/`](results/likelihood).
+input JSONL. Published results are in [`results/likelihood/`](results/likelihood): the seven
+models in the paper's Table 1, plus Gemma 4 31B (base), scored after publication.
 
 To exercise the path without the full benchmark, run it against the public sample:
 

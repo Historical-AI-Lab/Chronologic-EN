@@ -60,8 +60,10 @@ fit where it otherwise would not.
 ## The leaderboard
 
 `make_leaderboard_table.py` turns a directory of `eval_results_full_*.json` into the
-leaderboard in three formats — CSV, Markdown and LaTeX. The published version, covering the
-seven models in the paper's Table 1, is in [`../results/likelihood/`](../results/likelihood).
+leaderboard in three formats — CSV, Markdown and LaTeX. The published version is in
+[`../results/likelihood/`](../results/likelihood). It covers the seven models in the paper's
+Table 1, plus Gemma 4 31B (base), scored after publication with
+`gemma4_31b_eval_A100x2.slurm`.
 
 Working output lives in `prob_08/` (probabilistic) and the `mcq_*/` directories. Note that
 `eval_results_full_*.json` records every scored answer option verbatim, so those files
