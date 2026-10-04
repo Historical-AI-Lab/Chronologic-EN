@@ -65,9 +65,12 @@ leaderboard in three formats — CSV, Markdown and LaTeX. The published version 
 Table 1, plus Gemma 4 31B (base), scored after publication with
 `gemma4_31b_eval_A100x2.slurm`.
 
-Working output lives in `prob_08/` (probabilistic) and the `mcq_*/` directories. Note that
-`eval_results_full_*.json` records every scored answer option verbatim, so those files
-carry the benchmark's answers and are deliberately not committed.
+Working output lives in `prob_08/` (probabilistic) and the `mcq_*/` directories.
+`eval_results_full_*.json` holds only per-question probabilities, log-likelihoods and
+correctness, with no question or answer text. The `--verbose-report` markdown
+(`eval_report_*.md`), by contrast, prints every question with its answer options and ground
+truth, so those reports carry the benchmark and are kept out of the repository by
+`.gitignore`.
 
 ## The self-rejection experiment
 
