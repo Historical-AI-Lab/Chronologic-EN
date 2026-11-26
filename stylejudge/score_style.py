@@ -190,7 +190,9 @@ def _resolve(args) -> dict:
 
     if args.e3:
         reference = Path(args.reference) if args.reference else tp.DEFAULT_REFERENCE_OUT_E3
-        e1_model_dir = Path(args.e1_model_dir) if args.e1_model_dir else tp.DEFAULT_E1_MODEL_DIR_E3
+        # The default E3 date judge falls back to the HF Hub copy when the
+        # local checkout is absent (a fresh clone); an explicit flag is used as given.
+        e1_model_dir = Path(args.e1_model_dir) if args.e1_model_dir else tp.date_model_dir()
         temperature_fit = (Path(args.temperature_fit) if args.temperature_fit
                            else tp.DEFAULT_TEMPERATURE_FIT_E3)
         length_bin_edges = (Path(args.length_bin_edges) if args.length_bin_edges
@@ -202,7 +204,14 @@ def _resolve(args) -> dict:
                            else tp.DEFAULT_TEMPERATURE_FIT)
         length_bin_edges = (Path(args.length_bin_edges) if args.length_bin_edges
                             else tp.DEFAULT_LENGTH_BIN_EDGES)
-    e2_run_dir = Path(args.e2_run_dir) if args.e2_run_dir else tp.DEFAULT_E2_RUN_DIR
+    # Same fallback for the E2 authenticity judge, resolved only when the auth
+    # channel will load it, so a date-only run never triggers a download.
+    if args.e2_run_dir:
+        e2_run_dir = Path(args.e2_run_dir)
+    elif channels in ("auth", "both"):
+        e2_run_dir = tp.authenticity_model_dir()
+    else:
+        e2_run_dir = tp.DEFAULT_E2_RUN_DIR
 
     # Channel-aware default output names so an --e3 / single-channel run never
     # clobbers the frozen lexical `both` artifacts (report JSON/MD *and* the
