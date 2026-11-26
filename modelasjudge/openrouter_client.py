@@ -215,7 +215,7 @@ def _build_extra_body(model_id, reasoning_effort, max_tokens):
 def call_openrouter_chat(
     client, model_id, user_content, system_content="",
     max_tokens=400, max_retries=3, debug=False, reasoning_effort="none",
-    response_format=None, return_meta=False,
+    response_format=None, return_meta=False, messages=None,
 ):
     """Call the OpenRouter chat completions endpoint with retry on rate limits.
 
@@ -265,15 +265,24 @@ def call_openrouter_chat(
                           then recovered an answer). "mandatory_reasoning_retry"
                           is True iff that bumped-retry fallback path fired.
                           Default False leaves every existing caller unaffected.
+        messages:         optional full chat message list (system/user/assistant
+                          dicts), used verbatim instead of building one from
+                          user_content/system_content. Few-shot prompting passes
+                          its worked examples this way. None (the default) leaves
+                          every existing caller unaffected.
 
     Returns:
         str, or (str, dict) if return_meta: the assistant message content (or ""
         if content is None/empty), optionally paired with retry metadata.
     """
-    messages = []
-    if system_content:
-        messages.append({"role": "system", "content": system_content})
-    messages.append({"role": "user", "content": user_content})
+    if messages is not None:
+        messages = list(messages)
+        user_content = messages[-1]["content"]  # for the debug print below
+    else:
+        messages = []
+        if system_content:
+            messages.append({"role": "system", "content": system_content})
+        messages.append({"role": "user", "content": user_content})
 
     def _do_request(effort, extra_bump=0):
         effective_max = (max_tokens + 2048 if effort != "none" else max_tokens) + extra_bump

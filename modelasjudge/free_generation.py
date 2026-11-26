@@ -399,6 +399,60 @@ def generate_answer_openrouter(question, model_id, client, reasoning_effort="non
 
 
 # ---------------------------------------------------------------------------
+# Few-shot generation (see fewshot.py). The zero-shot functions above are
+# untouched; these take a pre-rendered fewshot.FewShotPrompt instead.
+# ---------------------------------------------------------------------------
+
+def generate_fewshot_openai(prompt, model_id, client, reasoning_effort="none"):
+    """Responses API: exemplars go in `input` as prior user/assistant turns."""
+    effective_max_tokens = prompt.max_tokens if reasoning_effort == "none" else 25000
+    response = _call_responses_with_retry(
+        client, model_id, prompt.turns, prompt.system,
+        max_output_tokens=effective_max_tokens,
+        reasoning_effort=reasoning_effort,
+        text_format=None,
+    )
+    return (response.output_text or "").strip()
+
+
+def generate_fewshot_openrouter(prompt, model_id, client, reasoning_effort="none"):
+    max_tokens = prompt.max_tokens
+    if always_reasons(model_id) or reasoning_effort == "max":
+        max_tokens = max(max_tokens, 25000)
+    answer, meta = call_openrouter_chat(
+        client, model_id, user_content=None,
+        messages=prompt.chat_messages(),
+        max_tokens=max_tokens,
+        reasoning_effort=reasoning_effort,
+        return_meta=True,
+    )
+    return answer.strip(), meta["downgraded"]
+
+
+def generate_fewshot_hf(prompt, style, model, tokenizer):
+    """Local models (HF or Talkie), greedy, with the prompt rendered per style.
+
+    Bypasses _generate_hf because that applies Talkie-IT's single-user-turn
+    wrapper; here the full multi-turn string is built explicitly.
+    """
+    import torch
+    from benchmark_evaluation import _input_device
+    import fewshot
+
+    if style == "hf_chat":
+        input_ids = tokenizer.apply_chat_template(
+            prompt.chat_messages(), add_generation_prompt=True, return_tensors="pt")
+    else:
+        text = prompt.talkie_it_text() if style == "talkie_it" else prompt.completion_text
+        input_ids = tokenizer(text, return_tensors="pt").input_ids
+    input_ids = input_ids.to(_input_device(model))
+    with torch.no_grad():
+        output_ids = model.generate(input_ids, max_new_tokens=prompt.max_tokens, do_sample=False)
+    raw = tokenizer.decode(output_ids[0, input_ids.shape[1]:], skip_special_tokens=True)
+    return fewshot.truncate_at_stops(raw).strip()
+
+
+# ---------------------------------------------------------------------------
 # Output normalization
 # ---------------------------------------------------------------------------
 
@@ -537,6 +591,10 @@ def run_free_generation(
     device=None,
     device_map=None,
     candidate_label=None,
+    fewshot_k=None,
+    fewshot_seed=0,
+    fewshot_manifest=None,
+    prompt_style=None,
 ):
     """Generate free-text answers for benchmark questions and write a JSON report.
 
@@ -564,6 +622,14 @@ def run_free_generation(
                                      and downstream metadata).  Defaults to model_id.  Use this
                                      to distinguish fine-tuned variants from their base model
                                      (e.g. 'Qwen2.5-7B-Instruct-ft').
+        fewshot_k:                   None = zero-shot (unchanged legacy prompts). An int k
+                                     (0 included: the new-format control) turns on few-shot
+                                     prompting with the shared exemplar manifest (fewshot.py).
+        fewshot_seed:                seed selecting the manifest.
+        fewshot_manifest:            explicit manifest path; default fewshot_manifests/...,
+                                     built on first use.
+        prompt_style:                'chat' or 'completion'; required for few-shot with plain
+                                     HF models, inferred for API backends and Talkie.
 
     Returns:
         str: absolute path to the written JSON output file.
@@ -571,9 +637,19 @@ def run_free_generation(
     if candidate_label is None:
         candidate_label = model_id
 
-    questions = _load_questions(path_to_jsonl)
+    all_questions = _load_questions(path_to_jsonl)
+    questions = all_questions
     if num_questions is not None:
         questions = questions[:num_questions]
+
+    fs_manifest = fs_manifest_path = None
+    by_qnum = {q.get('question_number'): q for q in all_questions}
+    if fewshot_k is not None:
+        import fewshot
+        # Exemplars come from the whole benchmark, never just the -n subset.
+        fs_manifest, fs_manifest_path = fewshot.load_or_build_manifest(
+            path_to_jsonl, all_questions, fewshot_k, fewshot_seed, fewshot_manifest)
+        print(fewshot.summarize(fs_manifest))
 
     bver = _benchmark_version(path_to_jsonl)
     bpath = str(Path(path_to_jsonl).resolve())
@@ -586,10 +662,49 @@ def run_free_generation(
         output_path = out_dir / f"free_gen_{ctag}__{bver}.json"
     output_path = Path(output_path)
 
+    # Determine backend
+    use_openai = is_openai_model(model_id)
+    use_openrouter = (not use_openai) and (force_openrouter or is_openrouter_model(model_id))
+
+    # Few-shot config is fixed before any model loads, so a mismatch with an
+    # existing output file fails at second 0.
+    fs_config = None
+    if fs_manifest is not None:
+        import fewshot
+        if use_openai or use_openrouter:
+            backend, talkie_style = ("openai" if use_openai else "openrouter"), None
+        else:
+            from talkie_backend import is_talkie_model, _resolve_talkie_paths
+            if is_talkie_model(model_id):
+                backend, talkie_style = "talkie", _resolve_talkie_paths(model_id)[2]
+            else:
+                backend, talkie_style = "hf", None
+        try:
+            resolved_style = fewshot.resolve_prompt_style(prompt_style, backend, talkie_style)
+        except ValueError as exc:
+            sys.exit(f"ERROR: {exc}")
+        fs_config = {
+            "k": fewshot_k,
+            "seed": fewshot_seed,
+            "prompt_style": resolved_style,
+            "manifest": Path(fs_manifest_path).name,
+            "benchmark_sha256": fs_manifest["benchmark_sha256"],
+            "rules_version": fs_manifest["rules_version"],
+        }
+        print(f"Few-shot: k={fewshot_k} seed={fewshot_seed} prompt_style={resolved_style}")
+
     # Load existing results for resume
     if output_path.exists():
         with open(output_path, encoding='utf-8') as fh:
             existing = json.load(fh)
+        existing_fs = existing.get('fewshot')
+        if existing_fs != fs_config:
+            sys.exit(
+                f"ERROR: {output_path} was generated with fewshot={existing_fs!r}, but this run "
+                f"requests fewshot={fs_config!r}. Resuming would mix prompt formats in one file. "
+                f"Use a distinct --candidate-label (run_pipeline.py derives one automatically "
+                f"from --fewshot), or move the old file aside."
+            )
         already_answered = set(existing.get('answers', {}).keys())
         answers = existing.get('answers', {})
         print(f"Resuming: {len(already_answered)} questions already answered.")
@@ -606,10 +721,8 @@ def run_free_generation(
         "reasoning_effort": reasoning_effort,
         "answers": answers,
     }
-
-    # Determine backend
-    use_openai = is_openai_model(model_id)
-    use_openrouter = (not use_openai) and (force_openrouter or is_openrouter_model(model_id))
+    if fs_config is not None:
+        output_data["fewshot"] = fs_config
 
     if use_openai:
         org_id, api_key = load_openai_credentials(credentials_path)
@@ -648,7 +761,21 @@ def run_free_generation(
 
         print(f"  [{idx + 1}/{total}] question_number={qnum}", end=' ', flush=True)
 
-        if use_openai:
+        fs_record = None
+        if fs_config is not None:
+            prompt, entry = fewshot.render_from_manifest(q, fs_manifest, by_qnum)
+            length_spec = prompt.length_spec
+            downgraded = False
+            style = fs_config["prompt_style"]
+            if use_openai:
+                answer = generate_fewshot_openai(prompt, model_id, client, reasoning_effort)
+            elif use_openrouter:
+                answer, downgraded = generate_fewshot_openrouter(prompt, model_id, client, reasoning_effort)
+            else:
+                answer = generate_fewshot_hf(prompt, style, hf_model, hf_tokenizer)
+            fs_record = {k: entry[k] for k in ("k", "exemplars", "exemplar_types", "dropped",
+                                               "fallback", "short_pool", "projected_tokens")}
+        elif use_openai:
             answer, length_spec = generate_answer_openai(
                 q, model_id, client, reasoning_effort=reasoning_effort
             )
@@ -680,6 +807,8 @@ def run_free_generation(
             "answer": answer,
             "reasoning_downgraded": downgraded,
         }
+        if fs_record is not None:
+            answers[qnum]["fewshot"] = fs_record
 
         # Write after every answer (crash-safe)
         with open(output_path, 'w', encoding='utf-8') as fh:
@@ -691,6 +820,11 @@ def run_free_generation(
             f"\n{n_downgraded}/{len(answers)} answers had reasoning disabled after "
             f"hitting the length cap at reasoning_effort={reasoning_effort!r}."
         )
+    if fs_config is not None:
+        n_fb = sum(1 for a in answers.values() if a.get('fewshot', {}).get('fallback'))
+        n_sp = sum(1 for a in answers.values() if a.get('fewshot', {}).get('short_pool'))
+        print(f"\nFew-shot: {n_fb}/{len(answers)} answers fell back below k={fewshot_k} "
+              f"(token ceiling); {n_sp} had too few eligible exemplars.")
     print(f"\nDone. Results written to: {output_path.resolve()}")
     return str(output_path.resolve())
 
@@ -781,6 +915,25 @@ def main():
              "Use to distinguish fine-tuned variants from their base model "
              "(e.g. 'Qwen2.5-7B-Instruct-ft'). Defaults to model_id.",
     )
+    parser.add_argument(
+        '--fewshot', type=int, metavar='K', default=None,
+        help="Few-shot prompting with K worked examples per question (see fewshot.py). "
+             "K=0 gives the new prompt format with no examples (control). Omit for the "
+             "legacy zero-shot prompts.",
+    )
+    parser.add_argument(
+        '--fewshot-seed', type=int, default=0, metavar='S',
+        help="Seed selecting the exemplar manifest (default 0).",
+    )
+    parser.add_argument(
+        '--fewshot-manifest', metavar='PATH', default=None,
+        help="Explicit exemplar manifest (default: fewshot_manifests/, built on first use).",
+    )
+    parser.add_argument(
+        '--prompt-style', choices=['chat', 'completion'], default=None,
+        help="Few-shot prompt format. Inferred for API models (chat) and Talkie "
+             "(chat for -it, completion for base); required for other HF models.",
+    )
 
     args = parser.parse_args()
 
@@ -811,6 +964,10 @@ def main():
         device=args.device,
         device_map=args.device_map,
         candidate_label=args.candidate_label,
+        fewshot_k=args.fewshot,
+        fewshot_seed=args.fewshot_seed,
+        fewshot_manifest=args.fewshot_manifest,
+        prompt_style=args.prompt_style,
     )
 
 

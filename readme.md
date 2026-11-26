@@ -54,7 +54,31 @@ All three are in `.gitignore`.
 Running the benchmark
 ---------------------
 
-Once you retrieve the full benchmark file from the gated HF repo, a model can be scored two ways. They measure
+### Getting the full benchmark
+
+Every scoring path needs the complete 866-question file, which is **not in this
+repository**. Request access to the gated dataset at
+[huggingface.co/datasets/chronologic/Chronologic-EN-1.0](https://huggingface.co/datasets/chronologic/Chronologic-EN-1.0),
+accept its terms, download the JSONL, and save it as:
+
+```
+booksample/chronologic_en_1.0.jsonl
+```
+
+Keep `1.0` in the filename wherever you put it. The pipeline reads the benchmark version
+from the filename (the last `X.Y` in it) and uses it to find the matching frozen
+instruments under `modelasjudge/`. A file named differently looks like a different
+benchmark version, and the expensive instrument stages will try to re-run.
+`booksample/chronologic*` is in `.gitignore` (apart from the public sample), so the
+file won't be committed by accident. Please don't redistribute it.
+
+Every command below passes `--benchmark booksample/chronologic_en_1.0.jsonl`; if you
+saved the file elsewhere, pass that path instead. Scripts that make `--benchmark`
+optional look for `booksample/chronologic_en_X.Y.jsonl` and stop with instructions if
+it is missing. They never fall back to the public sample, which would otherwise be
+scored silently under the full benchmark's `1.0` tag.
+
+Once you have the file, a model can be scored two ways. They measure
 different things and are not interchangeable: likelihood scoring asks whether a model
 *prefers* an apt answer; free generation asks whether it can *produce* one.
 
@@ -114,7 +138,13 @@ python modelasjudge/run_pipeline.py \
 Thirteen stages run in dependency order, each skipping if its output already exists, so an
 interrupted run resumes by re-issuing the same command. **Use `--dry-run` first**: it
 prints the stage table with an estimated judge-call count, which is the only warning you
-get before spending money.
+get before spending money. In a fresh clone, stages 0–7 (the frozen instruments) should
+all report `skip`, and only the candidate stages 8–12 should run. If an instrument stage
+wants to run, stop and check the benchmark filename first (see
+[`modelasjudge/README.md`](modelasjudge/README.md)).
+
+You can dry-run against the public sample to check your setup, but don't score real
+runs on it: its results would be tagged `1.0`, the same as the full benchmark's.
 
 Results append to `modelasjudge/results/chronologic_scores.csv`. Published scores for all
 thirteen models in the paper's Table 2 are in [`results/`](results), together with the

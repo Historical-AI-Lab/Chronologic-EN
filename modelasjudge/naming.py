@@ -44,16 +44,29 @@ def benchmark_version(benchmark_path) -> str:
 def latest_benchmark(booksample_dir) -> Path:
     """Return the path to the highest-versioned chronologic_en_X.Y.jsonl.
 
+    Only exact chronologic_en_X.Y.jsonl names count. Variants such as the public
+    chronologic_en_1.0_sample.jsonl are never picked by default: the sample
+    would otherwise be scored silently under the full benchmark's "1.0" tag.
+
     Raises FileNotFoundError if no matching file is found.
     """
     booksample_dir = Path(booksample_dir)
-    candidates = list(booksample_dir.glob("chronologic_en_*.jsonl"))
+    pattern = re.compile(r"chronologic_en_(\d+)\.(\d+)\.jsonl")
+    candidates = [p for p in booksample_dir.glob("chronologic_en_*.jsonl") if pattern.fullmatch(p.name)]
     if not candidates:
-        raise FileNotFoundError(f"No chronologic_en_*.jsonl found in {booksample_dir}")
+        raise FileNotFoundError(
+            f"No full benchmark (chronologic_en_X.Y.jsonl) found in {booksample_dir}. "
+            "This repository ships only the 100-question public sample. Download the "
+            "complete file from the gated dataset at "
+            "https://huggingface.co/datasets/chronologic/Chronologic-EN-1.0 and either "
+            f"save it as {booksample_dir / 'chronologic_en_1.0.jsonl'} or pass "
+            "--benchmark PATH. (To run on the sample deliberately, pass "
+            "--benchmark booksample/chronologic_en_1.0_sample.jsonl.)"
+        )
 
     def _ver(p: Path):
-        m = re.search(r"chronologic_en_(\d+)\.(\d+)\.jsonl", p.name)
-        return (int(m.group(1)), int(m.group(2))) if m else (-1, -1)
+        m = pattern.fullmatch(p.name)
+        return (int(m.group(1)), int(m.group(2)))
 
     return max(candidates, key=_ver)
 

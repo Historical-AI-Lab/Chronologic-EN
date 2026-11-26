@@ -5,7 +5,9 @@ describes every field. Counts below are from the released file, so they double a
 description of the benchmark's shape.
 
 The public sample (`booksample/chronologic_en_1.0_sample.jsonl`, 100 questions) uses the
-identical schema, so code written against it works against the full file unchanged.
+identical schema, so code written against it works against the full file unchanged. The
+full file is distributed through a gated Hugging Face dataset, not this repository. See
+"Getting the full benchmark" in the [readme](readme.md) for where to save it.
 
 ## Required fields
 

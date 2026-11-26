@@ -69,6 +69,10 @@ python run_pipeline.py --candidate openai/gpt-5.4 --candidate-label gpt-5.4 \
     --candidate-effort medium --benchmark ../booksample/chronologic_en_1.0.jsonl --dry-run
 ```
 
+The full benchmark isn't in this repository. Get it from the gated Hugging Face dataset and
+save it as `booksample/chronologic_en_1.0.jsonl` (see "Getting the full benchmark" in the
+[top-level readme](../readme.md)), or point `--benchmark` at wherever you keep it.
+
 **Always dry-run first.** It prints the stage table with an estimated judge-call count per
 stage, which is the only warning before the run starts spending money. Drop `--dry-run` to
 execute. Every stage has a content-based skip predicate, so re-issuing the same command
@@ -84,11 +88,31 @@ The stages fall into three groups:
 
 If a stage in 0–7 wants to *run*, stop and find out why: those are the expensive ones, and
 the committed artifacts should satisfy all of them. The usual cause is a benchmark filename
-whose version tag doesn't match the artifacts — see below.
+whose version tag doesn't match the artifacts (see below). Other possible causes:
+`distractor_penalties.txt` is missing (stage 0 then reports unclassified answer types, and
+stage 2 marks every reliability entry stale), or an instrument artifact has been edited.
+Don't let stage 2 run on a false alarm: its preparation step deletes the per-question
+entries it considers stale from `llm_reliability/` before re-judging them.
+
+Stages 3, 6 and 7 compare output and input modification times, and a git clone resets
+those. So `instrument_freshness.json` records SHA-256 hashes of each output/input pair.
+If both files still match, the stage skips whatever the mtimes say; any edit to either
+file voids the stamp. Maintainers: after regenerating an instrument artifact, run
+`run_pipeline.py --candidate X --benchmark ... --stamp-instrument` before committing.
 
 Useful flags: `--only STAGE` and `--stop-after STAGE` to run part of the pipeline,
 `--force STAGE` to recompute something deliberately, `--no-style` to skip stage 12,
 `--judge` and `--bt-judge` to change judges.
+
+**Few-shot prompting.** `--fewshot 3` gives stage 8 three worked examples per question;
+`--fewshot 0` is the control (the new prompt format with no examples). The candidate label
+gets a `-fs{K}s{SEED}` suffix, so few-shot runs never mix with zero-shot ones. Examples
+come from a shared manifest in `fewshot_manifests/` (one per benchmark, k and
+`--fewshot-seed`, built on first use), so every model sees the same prompts. Selection
+rules and formats are documented in `fewshot.py`, with design notes and sample prompts
+in `fewshot_design/`. API models and Talkie get the right format automatically; plain HF
+models need `--prompt-style chat|completion`. Preview prompts with
+`python fewshot.py preview BENCHMARK --qnum 605`.
 
 ## Artifact layout
 
@@ -99,8 +123,11 @@ stem. Rename the benchmark file and the pipeline will look for differently-named
 
 | Directory | Holds |
 |---|---|
+| `distractor_penalties.txt` | What each distractor type gets wrong (question, context, or both); read by the reliability and verdict code |
+| `instrument_freshness.json` | SHA-256 stamps that let stages 3/6/7 skip in a fresh clone (see above) |
+| `fewshot_manifests/` | Frozen few-shot exemplar choices, one per benchmark × k × seed |
 | `llm_reliability/` | Per-question judge reliability, measured on known-answer pairs |
-| `beta_reliability/` | Posterior draws for binary-judge reliability |
+| `beta_reliability/` | Posterior draws for binary-judge reliability, and the ground-truth pairs (`gt_pairs_*`) they are fitted from |
 | `bt_artifacts/` | The frozen anchor fit, the pairwise judgments behind it, the LOO set, the calibration draws |
 | `bt_artifacts/cache/` | Content-addressed judge-call cache. Not committed: large, and regenerable |
 | `substantive_artifacts/` | Per-candidate Δ posterior draws |

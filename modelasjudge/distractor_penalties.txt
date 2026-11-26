@@ -1,0 +1,178 @@
+# answer_type <TAB> penalty class -- which criteria this distractor type violates.
+#
+#   question  the answer is wrong or off-question (negation, same_book, ...)
+#   both      wrong on the question AND out of period (manual, opposing_view, ...)
+#   context   accurate and relevant, but not something the period source would
+#             say (anachronistic_*, other_book_*, britannica*)
+#
+# Two consumers read this, both resting on the same fact -- what the type gets wrong:
+#
+#   judge_alpha_reliability_nocontext.py  a GT-vs-distractor tie counts as a
+#       CORRECT judgment for "context" types, since the pass/fail path does not
+#       measure period fidelity, and as wrong for "question"/"both".
+#
+#   substantive/verdicts.py  a candidate answer verbatim-identical to a
+#       probability-0 distractor auto-fails on the pass/fail path only for
+#       "question"/"both" types. On the partial-credit path every probability-0
+#       distractor auto-fails, because that path does cover context fit.
+#
+# A type missing from this file is treated as unknown, never as known-bad: it is
+# skipped for reliability and is not eligible for auto-fail.
+#
+other_book_1911	context
+other_book_1913	context
+other_book_1889	context
+other_book_1903	context
+other_book_1875	context
+other_book_1910	context
+other_book_1894	context
+other_book_1883	context
+other_book_1879	context
+other_book_1924	context
+other_book_1891	context
+other_book_1880	context
+anachronistic_1865	context
+other_book_1907	context
+other_book_1884	context
+other_book_1896	context
+other_book_1897	context
+other_book_1915	context
+other_book_1906	context
+anachronistic_gpt-4o	context
+manual	both
+manual_distractor	both
+opposing_side	both
+opposing_view	both
+same_book	question
+negation	question
+manual_same_book	question
+same_character	question
+manual_negation	question
+anachronistic_gpt-oss:20b	context
+anachronistic_manual	context
+anachronistic_metadataless_mistral-small:24b	context
+anachronistic_mistral-small:24b	context
+anachronistic_metadataless_gpt-oss:20b	context
+anachronistic_gpt-5.2	context
+anachronistic_wikipedia	context
+anachronistic_sonnet-4.6	context
+anachronistic_distort1_gpt-oss:20b	context
+manual_anachronistic_metadataless_gpt-oss:20b	context
+anachronistic_distort2_mistral-small:24b	context
+manual_anachronistic_mistral-small:24b	context
+anachronistic_older	context
+anachronistic_qwen2.5:7b-instruct	context
+manual_anachronistic_gpt-oss:20b	context
+britannica1911ab	context
+manual_anachronistic_metadataless_mistral-small:24b	context
+anachronistic_1892	context
+anachronistic_1878	context
+anachronistic_google	context
+32044010165728	context
+anachronistic_1918	context
+anachronistic_1889	context
+anachronistic_1940	context
+britannica1875ab	context
+anachronistic_internet	context
+manual_anachronistic_distort2_mistral-small:24b	context
+Gilman1910	context
+anachronistic_1903	context
+anachronistic-sonnet_4.6	context
+anachronistic_1924	context
+anachronistic_1879	context
+anachronistic_2025	context
+hvd.32044088989421	context
+manual_anachronistic_distractor	context
+anachronistic_1911	context
+anachronistic_1950	context
+anachronistic_1940s	context
+anachronistic_1980	context
+hnuyze	context
+other_book_1918	context
+anachronistic_2014	context
+other_book_1878	context
+32044010396745	context
+anachronistic_1949	context
+anachronistic_2024	context
+32044102772175	context
+32044086056843	context
+anachronistic_1906	context
+hn23kk	context
+hvd.hnuyze	context
+hvd.32044054092978	context
+other_book_1919	context
+other_book_1892	context
+hvd.32044102796562	context
+anachornistic_gpt-5.2	context
+anachronistic_1896	context
+HenryJames1880s	context
+32044005533252	context
+Ruskin1865	context
+anachronistic_1907	context
+IAappleton	context
+anachronistic_gpt-5.4	context
+anachronistic_qwen3-30b-a3b-instruct-2507	context
+anachronistic_gemini-3.6-flash	context
+anachronistic_claude-opus-5	context
+anachronistic_gemma-4-31b-it	context
+anachronistic_gpt-5.6-sol	context
+anachronistic_metadataless_gemma-4-31b-it	context
+anachronistic_talkie-1930-13b-it	context
+anachronistic_metadataless_qwen3-30b-a3b-instruct-2507	context
+anachronistic_distort2_qwen3-30b-a3b-instruct-2507	context
+anachronistic_gpt-4.1-ft	context
+anachronistic_distort1_gemma-4-31b-it	context
+anachronistic_Qwen2.5-72B-Instruct	context
+anachronistic_deepseek-r1-distill-llama-70b	context
+anachronistic_gpt-5.5	context
+anachronistic_claude-opus-4-8	context
+anachronistic_1859	context
+anachronistic_talkie-1930-it	context
+other_book_1922	context
+anachronistic_1860	context
+anachronistic_1834	context
+anachronistic_1930	context
+anachronistic_1837	context
+anachronistic_1927	context
+other_book_1920	context
+anachronistic_1820	context
+anachronistic_1819	context
+other_book_1916	context
+anachronistic_1845	context
+anachronistic_1929	context
+manual_anachronistic_gemma-4-31b-it	context
+anachronistic_talkie-1930-13b-base	context
+anachronistic_1801	context
+other_book_1904	context
+anachronistic_1818	context
+other_book_1912	context
+other_book_1881	context
+anachronistic_1844	context
+anachronistic_1814	context
+anachronistic_1856	context
+anachronistic_1825	context
+anachronistic_1956	context
+anachronistic_1647	context
+anachronistic_1868	context
+anachronistic_1840	context
+anachronistic_1816	context
+anachronistic_1841	context
+anachronistic_1867	context
+anachronistic_1828	context
+other_book_1914	context
+anachronistic_1866	context
+anachronistic_2020	context
+anachronistic_1962	context
+anachronistic_1943	context
+anachronistic_1928	context
+other_book_1902	context
+anachronistic_1975	context
+anachronistic_1852	context
+other_book_1995	context
+other_book_1923	context
+anachronistic_1830	context
+other_book_1908	context
+anachronistic_1811	context
+anachronistic_1864	context
+anachronistic_1873	context
+anachronistic_1861	context

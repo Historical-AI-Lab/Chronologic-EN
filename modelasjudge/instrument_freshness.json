@@ -1,0 +1,20 @@
+{
+ "beta_reliability/beta_draws_anthropic_claude-sonnet-4-6__1.0.npz": {
+  "input": "beta_reliability/gt_pairs_anthropic_claude-sonnet-4-6__0.4.jsonl",
+  "input_sha256": "4a0e88dad1c14e23e7a3be1390057b8f0e170060afb685a7cde7baf726b4e09a",
+  "output_sha256": "243078c926789632c1873928d2069af1458eaef667b10103eede4e46cb4d77cb",
+  "stage": "beta_regression"
+ },
+ "bt_artifacts/bt_calib_draws_anthropic_claude-sonnet-5__1.0__j-medium__pm-rationales.npz": {
+  "input": "bt_artifacts/bt_loo_anthropic_claude-sonnet-5__1.0__j-medium__pm-rationales.json",
+  "input_sha256": "3a01f4f1d1d4b2a84f131ef13d87865d82a73ee8934991ba7f5067f5d6c7e26a",
+  "output_sha256": "9ce0ebf972812faa7411b3a72191cc180f389684251f926e938717a18cae0e71",
+  "stage": "calibrate"
+ },
+ "bt_artifacts/bt_results_anthropic_claude-sonnet-5__1.0__j-medium__pm-rationales.json": {
+  "input": "bt_artifacts/bt_loo_anthropic_claude-sonnet-5__1.0__j-medium__pm-rationales.json",
+  "input_sha256": "3a01f4f1d1d4b2a84f131ef13d87865d82a73ee8934991ba7f5067f5d6c7e26a",
+  "output_sha256": "a3c3ca28fafcce40c55c51a00bb2f4fec64d1c24a4009b2ab8b2b03f6651f5c3",
+  "stage": "validate"
+ }
+}

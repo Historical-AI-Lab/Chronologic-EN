@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -105,6 +106,65 @@ def _newer(a, b) -> bool:
     return a.exists() and b.exists() and a.stat().st_mtime > b.stat().st_mtime
 
 
+# Committed instrument artifacts can't rely on mtimes alone: a git clone or a
+# zip download sets every mtime to checkout time, in whatever order files were
+# written, so "output newer than input" comes out arbitrarily (stages 3 and 7
+# re-ran in a fresh clone). This file records SHA-256 hashes of each
+# output/input pair as of the last verified run; if both files still match, the
+# output is fresh whatever the mtimes say. Written by --stamp-instrument.
+FRESHNESS_PATH = SCRIPT_DIR / "instrument_freshness.json"
+
+
+def _sha256(path) -> str:
+    import hashlib
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def _freshness_key(path) -> str:
+    return Path(os.path.relpath(Path(path).resolve(), SCRIPT_DIR)).as_posix()
+
+
+def _stamped(a, b) -> bool:
+    """True iff FRESHNESS_PATH vouches for output `a` against input `b`, both unchanged."""
+    rec = (_json_get(FRESHNESS_PATH) or {}).get(_freshness_key(a))
+    if not rec or rec.get("input") != _freshness_key(b):
+        return False
+    return rec.get("output_sha256") == _sha256(a) and rec.get("input_sha256") == _sha256(b)
+
+
+def _fresh(a, b) -> bool:
+    """Output `a` is up to date with input `b`: newer by mtime, or hash-stamped.
+    The stamp can only turn a run into a skip when both files are byte-identical
+    to the stamped pair; any edit to either falls back to the mtime test."""
+    a, b = Path(a), Path(b)
+    if not (a.exists() and b.exists()):
+        return False
+    return a.stat().st_mtime > b.stat().st_mtime or _stamped(a, b)
+
+
+def stamp_instrument(stages) -> list[str]:
+    """Record hashes for every instrument stage that is currently fresh by mtime.
+    Run after a verified local run, before committing instrument artifacts."""
+    data = _json_get(FRESHNESS_PATH) or {}
+    stamped = []
+    for s in stages:
+        if s.fresh_pair is None:
+            continue
+        a, b = s.fresh_pair
+        if not _newer(a, b) and not _stamped(a, b):
+            print(f"[{s.number}] {s.name}: NOT stamped -- {Path(a).name} is not newer than {Path(b).name}")
+            continue
+        data[_freshness_key(a)] = {"input": _freshness_key(b), "output_sha256": _sha256(a),
+                                   "input_sha256": _sha256(b), "stage": s.name}
+        stamped.append(s.name)
+    FRESHNESS_PATH.write_text(json.dumps(data, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+    return stamped
+
+
 def _ledger_has_style(bver, candidate_label, candidate_effort, judge, judge_effort, bt_tag,
                       column="style_period_fidelity") -> bool:
     """True iff the ledger row matching this 6-tuple key has a non-empty
@@ -166,6 +226,7 @@ class Stage:
     est_calls: int = 0
     est_fits: int = 0
     note: str = ""
+    fresh_pair: tuple[Path, Path] | None = None  # (output, input) for --stamp-instrument
 
     def resume_cmd(self) -> str:
         if self.argv is None:
@@ -254,6 +315,18 @@ def check_candidate_effort_matches_free_gen(candidate_label: str, benchmark_vers
         )
 
 
+def effective_candidate_label(args) -> str:
+    """The label every stage keys on. Few-shot runs get a '-fs{K}s{S}' suffix so
+    their free_gen file, scores and ledger rows never collide with (or resume
+    into) the zero-shot run of the same model."""
+    label = args.candidate_label or args.candidate
+    k = getattr(args, "fewshot", None)
+    if k is None:
+        return label
+    suffix = f"-fs{k}s{getattr(args, 'fewshot_seed', 0)}"
+    return label if label.endswith(suffix) else label + suffix
+
+
 # ---------------------------------------------------------------------------
 # build_stages -- read-only; safe to call under --dry-run
 # ---------------------------------------------------------------------------
@@ -264,7 +337,7 @@ def build_stages(args) -> list[Stage]:
     judge_effort = args.judge_effort
     bt_judge = args.bt_judge
     candidate = args.candidate
-    candidate_label = args.candidate_label or candidate
+    candidate_label = effective_candidate_label(args)
     candidate_effort = args.candidate_effort
     prior_scale = args.prior_scale
     prompt_mode = args.prompt_mode
@@ -385,14 +458,15 @@ def build_stages(args) -> list[Stage]:
     beta_draws_path = substantive_artifacts.beta_draws_path(judge, benchmark_path)
     stages.append(Stage(
         3, "beta_regression", "instrument",
-        skip=SkipResult(_newer(beta_draws_path, pairs_path),
-                        f"{beta_draws_path.name} newer than {pairs_path.name}"
-                        if _newer(beta_draws_path, pairs_path)
+        skip=SkipResult(_fresh(beta_draws_path, pairs_path),
+                        f"{beta_draws_path.name} up to date with {pairs_path.name}"
+                        if _fresh(beta_draws_path, pairs_path)
                         else f"{beta_draws_path.name} missing or stale vs {pairs_path.name}"),
         argv=[py, "fit_beta_regression_nocontext.py", str(pairs_path),
              "--benchmark", str(benchmark_path), "--save-draws", str(beta_draws_path)],
         cwd=SCRIPT_DIR, est_fits=1,
         note="judge validation / diagnostic -- not a scoring dependency",
+        fresh_pair=(beta_draws_path, pairs_path),
     ))
 
     # ---- stage 4: bt_context_scoring anchor-fit ---------------------------
@@ -461,14 +535,14 @@ def build_stages(args) -> list[Stage]:
     loo_path = bt_artifacts.loo_path(tag)
     stages.append(Stage(
         6, "validate", "instrument",
-        skip=SkipResult(_newer(results_path, loo_path),
-                        f"{results_path.name} newer than {loo_path.name}"
-                        if _newer(results_path, loo_path)
+        skip=SkipResult(_fresh(results_path, loo_path),
+                        f"{results_path.name} up to date with {loo_path.name}"
+                        if _fresh(results_path, loo_path)
                         else f"{results_path.name} missing or stale vs {loo_path.name}"),
         argv=[py, "bt_context_scoring.py", "validate", "--judge", bt_judge,
              "--judge-effort", judge_effort, "--benchmark", str(benchmark_path),
              "--prior-scale", str(prior_scale), "--prompt-mode", prompt_mode],
-        cwd=SCRIPT_DIR,
+        cwd=SCRIPT_DIR, fresh_pair=(results_path, loo_path),
     ))
 
     # ---- stage 7: bt_context_scoring calibrate ----------------------------
@@ -486,11 +560,11 @@ def build_stages(args) -> list[Stage]:
                  "running calibrate without pilot pooling.")
     stages.append(Stage(
         7, "calibrate", "instrument",
-        skip=SkipResult(_newer(calib_draws_path, loo_path),
-                        f"{calib_draws_path.name} newer than {loo_path.name}"
-                        if _newer(calib_draws_path, loo_path)
+        skip=SkipResult(_fresh(calib_draws_path, loo_path),
+                        f"{calib_draws_path.name} up to date with {loo_path.name}"
+                        if _fresh(calib_draws_path, loo_path)
                         else f"{calib_draws_path.name} missing or stale vs {loo_path.name}"),
-        argv=calibrate_argv, cwd=SCRIPT_DIR,
+        argv=calibrate_argv, cwd=SCRIPT_DIR, fresh_pair=(calib_draws_path, loo_path),
     ))
 
     # ---- stage 8: free_generation ------------------------------------------
@@ -498,14 +572,19 @@ def build_stages(args) -> list[Stage]:
     free_gen_path = GENERATED_ANSWERS_DIR / f"free_gen_{ctag}__{bver}.json"
     free_gen_data = _json_get(free_gen_path)
     n_answered = len((free_gen_data or {}).get("answers", {}))
+    free_gen_argv = [py, "free_generation.py", candidate, str(benchmark_path),
+                     "--reasoning-effort", candidate_effort, "--candidate-label", candidate_label]
+    if getattr(args, "fewshot", None) is not None:
+        free_gen_argv += ["--fewshot", str(args.fewshot), "--fewshot-seed", str(args.fewshot_seed)]
+        if args.prompt_style:
+            free_gen_argv += ["--prompt-style", args.prompt_style]
     stages.append(Stage(
         8, "free_generation", "candidate",
         skip=SkipResult(n_answered >= total_questions,
                         f"{free_gen_path.name} already has all {total_questions} answers"
                         if n_answered >= total_questions
                         else f"{free_gen_path.name} has {n_answered}/{total_questions} answers"),
-        argv=[py, "free_generation.py", candidate, str(benchmark_path),
-             "--reasoning-effort", candidate_effort, "--candidate-label", candidate_label],
+        argv=free_gen_argv,
         cwd=SCRIPT_DIR, est_calls=max(total_questions - n_answered, 0),
     ))
 
@@ -720,6 +799,13 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--judge-effort", default="medium", choices=["none", "low", "medium", "high"])
     parser.add_argument("--candidate-effort", default="none",
                         choices=["none", "minimal", "low", "medium", "high", "max"])
+    parser.add_argument("--fewshot", type=int, default=None, metavar="K",
+                        help="Stage 8: few-shot prompting with K worked examples (fewshot.py); "
+                             "K=0 is the new-format, no-example control. Appends -fs{K}s{SEED} "
+                             "to the candidate label. Omit for legacy zero-shot.")
+    parser.add_argument("--fewshot-seed", type=int, default=0, metavar="SEED")
+    parser.add_argument("--prompt-style", choices=["chat", "completion"], default=None,
+                        help="Few-shot prompt format; required only for plain HF models.")
     parser.add_argument("--prior-scale", type=float, default=3.0)
     parser.add_argument("--prompt-mode", default="rationales")
     parser.add_argument("--loo-subsample", type=int, default=80)
@@ -742,6 +828,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--stop-after", default=None, metavar="STAGE")
     parser.add_argument("--force", default=None, metavar="STAGE[,...]")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--stamp-instrument", action="store_true",
+                        help="Record SHA-256 freshness stamps (instrument_freshness.json) for "
+                             "stages 3/6/7 whose outputs are newer than their inputs, so a "
+                             "fresh git clone skips them despite reset mtimes. Maintainers: "
+                             "run after a verified run, before committing artifacts. Exits.")
     parser.add_argument("--python", default=DEFAULT_PYTHON)
     parser.add_argument("--seed-reliability-from", default="0.4", metavar="VERSION",
                         help="Benchmark version whose reliability/gt-pairs files seed a "
@@ -754,13 +845,25 @@ def main():
 
     check_pymc_importable(args.python)
 
-    benchmark_path = Path(args.benchmark) if args.benchmark else naming.latest_benchmark(BOOKSAMPLE_DIR)
+    try:
+        benchmark_path = Path(args.benchmark) if args.benchmark else naming.latest_benchmark(BOOKSAMPLE_DIR)
+    except FileNotFoundError as exc:
+        sys.exit(f"ERROR: {exc}")
+    if not benchmark_path.exists():
+        sys.exit(f"ERROR: --benchmark {benchmark_path} does not exist.")
+    args.benchmark = str(benchmark_path)  # build_stages then reuses it rather than re-resolving
     bver = naming.benchmark_version(benchmark_path)
     check_judge_effort_matches_seed(args.judge, bver, args.judge_effort, args.seed_reliability_from)
     check_candidate_effort_matches_free_gen(
-        args.candidate_label or args.candidate, bver, args.candidate_effort)
+        effective_candidate_label(args), bver, args.candidate_effort)
+    if args.fewshot is not None:
+        print(f"Few-shot k={args.fewshot} seed={args.fewshot_seed}: candidate label "
+              f"{effective_candidate_label(args)!r}")
 
     stages = build_stages(args)
+    if args.stamp_instrument:
+        print(f"Stamped: {stamp_instrument(stages)} -> {FRESHNESS_PATH.name}")
+        return
     stages = select_stages(stages, only=args.only, stop_after=args.stop_after)
 
     print_stage_plan(stages)

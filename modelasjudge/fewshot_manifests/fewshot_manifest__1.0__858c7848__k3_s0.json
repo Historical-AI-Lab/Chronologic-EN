@@ -1,0 +1,2028 @@
+{
+ "rules_version": 1,
+ "k_requested": 3,
+ "seed": 0,
+ "ceiling": 2048,
+ "safety_margin": 64,
+ "window_mult": 1.5,
+ "window_min": 64,
+ "reference_tokenizer": "talkie-1930-13b base vocab",
+ "pools": {
+  "knowledge": "world_qa",
+  "inference": "world_qa",
+  "abstention": "world_qa"
+ },
+ "strata": {
+  "world_qa": [
+   "knowledge",
+   "inference",
+   "abstention"
+  ]
+ },
+ "abstention_exemplar_must_refuse": true,
+ "entries": {
+  "3": {
+   "reasoning_type": "knowledge",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    752,
+    602,
+    471
+   ],
+   "exemplar_types": [
+    "knowledge",
+    "abstention",
+    "inference"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 18,
+   "projected_tokens": 645
+  },
+  "6": {
+   "reasoning_type": "knowledge",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    698,
+    752,
+    463
+   ],
+   "exemplar_types": [
+    "abstention",
+    "knowledge",
+    "inference"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 18,
+   "projected_tokens": 686
+  },
+  "12": {
+   "reasoning_type": "knowledge",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    752,
+    518,
+    602
+   ],
+   "exemplar_types": [
+    "knowledge",
+    "inference",
+    "abstention"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 18,
+   "projected_tokens": 660
+  },
+  "17": {
+   "reasoning_type": "knowledge",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    611,
+    605,
+    742
+   ],
+   "exemplar_types": [
+    "inference",
+    "abstention",
+    "knowledge"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 18,
+   "projected_tokens": 503
+  },
+  "33": {
+   "reasoning_type": "knowledge",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    518,
+    698,
+    752
+   ],
+   "exemplar_types": [
+    "inference",
+    "abstention",
+    "knowledge"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 18,
+   "projected_tokens": 662
+  },
+  "38": {
+   "reasoning_type": "knowledge",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    543,
+    126,
+    742
+   ],
+   "exemplar_types": [
+    "abstention",
+    "inference",
+    "knowledge"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 18,
+   "projected_tokens": 698
+  },
+  "42": {
+   "reasoning_type": "knowledge",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    611,
+    742,
+    617
+   ],
+   "exemplar_types": [
+    "inference",
+    "knowledge",
+    "abstention"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 18,
+   "projected_tokens": 511
+  },
+  "54": {
+   "reasoning_type": "character_modeling",
+   "pool": "character_modeling",
+   "k": 3,
+   "exemplars": [
+    875,
+    96,
+    880
+   ],
+   "exemplar_types": [
+    "character_modeling",
+    "character_modeling",
+    "character_modeling"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 9,
+   "projected_tokens": 1353
+  },
+  "61": {
+   "reasoning_type": "character_modeling",
+   "pool": "character_modeling",
+   "k": 3,
+   "exemplars": [
+    86,
+    107,
+    115
+   ],
+   "exemplar_types": [
+    "character_modeling",
+    "character_modeling",
+    "character_modeling"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 11,
+   "projected_tokens": 1450
+  },
+  "86": {
+   "reasoning_type": "character_modeling",
+   "pool": "character_modeling",
+   "k": 3,
+   "exemplars": [
+    111,
+    862,
+    97
+   ],
+   "exemplar_types": [
+    "character_modeling",
+    "character_modeling",
+    "character_modeling"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 10,
+   "projected_tokens": 1431
+  },
+  "89": {
+   "reasoning_type": "character_modeling",
+   "pool": "character_modeling",
+   "k": 3,
+   "exemplars": [
+    61,
+    97,
+    54
+   ],
+   "exemplar_types": [
+    "character_modeling",
+    "character_modeling",
+    "character_modeling"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 10,
+   "projected_tokens": 1315
+  },
+  "96": {
+   "reasoning_type": "character_modeling",
+   "pool": "character_modeling",
+   "k": 3,
+   "exemplars": [
+    61,
+    111,
+    97
+   ],
+   "exemplar_types": [
+    "character_modeling",
+    "character_modeling",
+    "character_modeling"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 9,
+   "projected_tokens": 1277
+  },
+  "97": {
+   "reasoning_type": "character_modeling",
+   "pool": "character_modeling",
+   "k": 3,
+   "exemplars": [
+    61,
+    86,
+    96
+   ],
+   "exemplar_types": [
+    "character_modeling",
+    "character_modeling",
+    "character_modeling"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 10,
+   "projected_tokens": 1356
+  },
+  "107": {
+   "reasoning_type": "character_modeling",
+   "pool": "character_modeling",
+   "k": 3,
+   "exemplars": [
+    880,
+    645,
+    86
+   ],
+   "exemplar_types": [
+    "character_modeling",
+    "character_modeling",
+    "character_modeling"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 9,
+   "projected_tokens": 1385
+  },
+  "111": {
+   "reasoning_type": "character_modeling",
+   "pool": "character_modeling",
+   "k": 3,
+   "exemplars": [
+    862,
+    880,
+    115
+   ],
+   "exemplar_types": [
+    "character_modeling",
+    "character_modeling",
+    "character_modeling"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 11,
+   "projected_tokens": 1363
+  },
+  "115": {
+   "reasoning_type": "character_modeling",
+   "pool": "character_modeling",
+   "k": 3,
+   "exemplars": [
+    107,
+    89,
+    875
+   ],
+   "exemplar_types": [
+    "character_modeling",
+    "character_modeling",
+    "character_modeling"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 10,
+   "projected_tokens": 1296
+  },
+  "126": {
+   "reasoning_type": "inference",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    585,
+    698,
+    6
+   ],
+   "exemplar_types": [
+    "inference",
+    "abstention",
+    "knowledge"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 26,
+   "projected_tokens": 681
+  },
+  "140": {
+   "reasoning_type": "constrained_generation",
+   "pool": "constrained_generation",
+   "k": 3,
+   "exemplars": [
+    570,
+    733,
+    765
+   ],
+   "exemplar_types": [
+    "constrained_generation",
+    "constrained_generation",
+    "constrained_generation"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 953
+  },
+  "146": {
+   "reasoning_type": "phrase_cloze",
+   "pool": "phrase_cloze",
+   "k": 3,
+   "exemplars": [
+    269,
+    154,
+    161
+   ],
+   "exemplar_types": [
+    "phrase_cloze",
+    "phrase_cloze",
+    "phrase_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 16,
+   "projected_tokens": 1088
+  },
+  "148": {
+   "reasoning_type": "phrase_cloze",
+   "pool": "phrase_cloze",
+   "k": 3,
+   "exemplars": [
+    423,
+    286,
+    385
+   ],
+   "exemplar_types": [
+    "phrase_cloze",
+    "phrase_cloze",
+    "phrase_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 16,
+   "projected_tokens": 992
+  },
+  "154": {
+   "reasoning_type": "phrase_cloze",
+   "pool": "phrase_cloze",
+   "k": 3,
+   "exemplars": [
+    161,
+    199,
+    385
+   ],
+   "exemplar_types": [
+    "phrase_cloze",
+    "phrase_cloze",
+    "phrase_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 1131
+  },
+  "161": {
+   "reasoning_type": "phrase_cloze",
+   "pool": "phrase_cloze",
+   "k": 3,
+   "exemplars": [
+    210,
+    146,
+    423
+   ],
+   "exemplar_types": [
+    "phrase_cloze",
+    "phrase_cloze",
+    "phrase_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 1026
+  },
+  "199": {
+   "reasoning_type": "phrase_cloze",
+   "pool": "phrase_cloze",
+   "k": 3,
+   "exemplars": [
+    161,
+    210,
+    387
+   ],
+   "exemplar_types": [
+    "phrase_cloze",
+    "phrase_cloze",
+    "phrase_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 1176
+  },
+  "210": {
+   "reasoning_type": "phrase_cloze",
+   "pool": "phrase_cloze",
+   "k": 3,
+   "exemplars": [
+    286,
+    387,
+    199
+   ],
+   "exemplar_types": [
+    "phrase_cloze",
+    "phrase_cloze",
+    "phrase_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 1129
+  },
+  "220": {
+   "reasoning_type": "sentence_cloze",
+   "pool": "sentence_cloze",
+   "k": 3,
+   "exemplars": [
+    332,
+    356,
+    406
+   ],
+   "exemplar_types": [
+    "sentence_cloze",
+    "sentence_cloze",
+    "sentence_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 18,
+   "projected_tokens": 1139
+  },
+  "224": {
+   "reasoning_type": "phrase_cloze",
+   "pool": "phrase_cloze",
+   "k": 3,
+   "exemplars": [
+    269,
+    376,
+    286
+   ],
+   "exemplar_types": [
+    "phrase_cloze",
+    "phrase_cloze",
+    "phrase_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 16,
+   "projected_tokens": 1045
+  },
+  "229": {
+   "reasoning_type": "sentence_cloze",
+   "pool": "sentence_cloze",
+   "k": 3,
+   "exemplars": [
+    220,
+    844,
+    275
+   ],
+   "exemplar_types": [
+    "sentence_cloze",
+    "sentence_cloze",
+    "sentence_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 18,
+   "projected_tokens": 1033
+  },
+  "239": {
+   "reasoning_type": "sentence_cloze",
+   "pool": "sentence_cloze",
+   "k": 3,
+   "exemplars": [
+    322,
+    362,
+    814
+   ],
+   "exemplar_types": [
+    "sentence_cloze",
+    "sentence_cloze",
+    "sentence_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 18,
+   "projected_tokens": 1026
+  },
+  "254": {
+   "reasoning_type": "phrase_cloze",
+   "pool": "phrase_cloze",
+   "k": 3,
+   "exemplars": [
+    260,
+    148,
+    385
+   ],
+   "exemplar_types": [
+    "phrase_cloze",
+    "phrase_cloze",
+    "phrase_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 1165
+  },
+  "260": {
+   "reasoning_type": "phrase_cloze",
+   "pool": "phrase_cloze",
+   "k": 3,
+   "exemplars": [
+    254,
+    667,
+    387
+   ],
+   "exemplar_types": [
+    "phrase_cloze",
+    "phrase_cloze",
+    "phrase_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 1190
+  },
+  "269": {
+   "reasoning_type": "phrase_cloze",
+   "pool": "phrase_cloze",
+   "k": 3,
+   "exemplars": [
+    154,
+    224,
+    667
+   ],
+   "exemplar_types": [
+    "phrase_cloze",
+    "phrase_cloze",
+    "phrase_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 1038
+  },
+  "275": {
+   "reasoning_type": "sentence_cloze",
+   "pool": "sentence_cloze",
+   "k": 3,
+   "exemplars": [
+    322,
+    295,
+    313
+   ],
+   "exemplar_types": [
+    "sentence_cloze",
+    "sentence_cloze",
+    "sentence_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 18,
+   "projected_tokens": 969
+  },
+  "286": {
+   "reasoning_type": "phrase_cloze",
+   "pool": "phrase_cloze",
+   "k": 3,
+   "exemplars": [
+    161,
+    390,
+    210
+   ],
+   "exemplar_types": [
+    "phrase_cloze",
+    "phrase_cloze",
+    "phrase_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 1164
+  },
+  "294": {
+   "reasoning_type": "sentence_cloze",
+   "pool": "sentence_cloze",
+   "k": 3,
+   "exemplars": [
+    329,
+    844,
+    332
+   ],
+   "exemplar_types": [
+    "sentence_cloze",
+    "sentence_cloze",
+    "sentence_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 1096
+  },
+  "295": {
+   "reasoning_type": "sentence_cloze",
+   "pool": "sentence_cloze",
+   "k": 3,
+   "exemplars": [
+    239,
+    828,
+    329
+   ],
+   "exemplar_types": [
+    "sentence_cloze",
+    "sentence_cloze",
+    "sentence_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 919
+  },
+  "304": {
+   "reasoning_type": "sentence_cloze",
+   "pool": "sentence_cloze",
+   "k": 3,
+   "exemplars": [
+    332,
+    229,
+    294
+   ],
+   "exemplar_types": [
+    "sentence_cloze",
+    "sentence_cloze",
+    "sentence_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 18,
+   "projected_tokens": 1051
+  },
+  "313": {
+   "reasoning_type": "sentence_cloze",
+   "pool": "sentence_cloze",
+   "k": 3,
+   "exemplars": [
+    356,
+    220,
+    830
+   ],
+   "exemplar_types": [
+    "sentence_cloze",
+    "sentence_cloze",
+    "sentence_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 18,
+   "projected_tokens": 1150
+  },
+  "322": {
+   "reasoning_type": "sentence_cloze",
+   "pool": "sentence_cloze",
+   "k": 3,
+   "exemplars": [
+    844,
+    220,
+    313
+   ],
+   "exemplar_types": [
+    "sentence_cloze",
+    "sentence_cloze",
+    "sentence_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 18,
+   "projected_tokens": 1107
+  },
+  "329": {
+   "reasoning_type": "sentence_cloze",
+   "pool": "sentence_cloze",
+   "k": 3,
+   "exemplars": [
+    406,
+    844,
+    239
+   ],
+   "exemplar_types": [
+    "sentence_cloze",
+    "sentence_cloze",
+    "sentence_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 18,
+   "projected_tokens": 1012
+  },
+  "332": {
+   "reasoning_type": "sentence_cloze",
+   "pool": "sentence_cloze",
+   "k": 3,
+   "exemplars": [
+    329,
+    313,
+    294
+   ],
+   "exemplar_types": [
+    "sentence_cloze",
+    "sentence_cloze",
+    "sentence_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 18,
+   "projected_tokens": 1107
+  },
+  "356": {
+   "reasoning_type": "sentence_cloze",
+   "pool": "sentence_cloze",
+   "k": 3,
+   "exemplars": [
+    220,
+    828,
+    398
+   ],
+   "exemplar_types": [
+    "sentence_cloze",
+    "sentence_cloze",
+    "sentence_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 18,
+   "projected_tokens": 1057
+  },
+  "362": {
+   "reasoning_type": "sentence_cloze",
+   "pool": "sentence_cloze",
+   "k": 3,
+   "exemplars": [
+    294,
+    332,
+    398
+   ],
+   "exemplar_types": [
+    "sentence_cloze",
+    "sentence_cloze",
+    "sentence_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 18,
+   "projected_tokens": 1054
+  },
+  "376": {
+   "reasoning_type": "phrase_cloze",
+   "pool": "phrase_cloze",
+   "k": 3,
+   "exemplars": [
+    260,
+    210,
+    390
+   ],
+   "exemplar_types": [
+    "phrase_cloze",
+    "phrase_cloze",
+    "phrase_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 1252
+  },
+  "385": {
+   "reasoning_type": "phrase_cloze",
+   "pool": "phrase_cloze",
+   "k": 3,
+   "exemplars": [
+    161,
+    224,
+    154
+   ],
+   "exemplar_types": [
+    "phrase_cloze",
+    "phrase_cloze",
+    "phrase_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 15,
+   "projected_tokens": 1092
+  },
+  "387": {
+   "reasoning_type": "phrase_cloze",
+   "pool": "phrase_cloze",
+   "k": 3,
+   "exemplars": [
+    224,
+    254,
+    146
+   ],
+   "exemplar_types": [
+    "phrase_cloze",
+    "phrase_cloze",
+    "phrase_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 15,
+   "projected_tokens": 1020
+  },
+  "390": {
+   "reasoning_type": "phrase_cloze",
+   "pool": "phrase_cloze",
+   "k": 3,
+   "exemplars": [
+    269,
+    376,
+    666
+   ],
+   "exemplar_types": [
+    "phrase_cloze",
+    "phrase_cloze",
+    "phrase_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 15,
+   "projected_tokens": 1106
+  },
+  "398": {
+   "reasoning_type": "sentence_cloze",
+   "pool": "sentence_cloze",
+   "k": 3,
+   "exemplars": [
+    295,
+    814,
+    406
+   ],
+   "exemplar_types": [
+    "sentence_cloze",
+    "sentence_cloze",
+    "sentence_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 18,
+   "projected_tokens": 1138
+  },
+  "406": {
+   "reasoning_type": "sentence_cloze",
+   "pool": "sentence_cloze",
+   "k": 3,
+   "exemplars": [
+    322,
+    220,
+    329
+   ],
+   "exemplar_types": [
+    "sentence_cloze",
+    "sentence_cloze",
+    "sentence_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 18,
+   "projected_tokens": 1000
+  },
+  "423": {
+   "reasoning_type": "phrase_cloze",
+   "pool": "phrase_cloze",
+   "k": 3,
+   "exemplars": [
+    210,
+    224,
+    390
+   ],
+   "exemplar_types": [
+    "phrase_cloze",
+    "phrase_cloze",
+    "phrase_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 1016
+  },
+  "424": {
+   "reasoning_type": "constrained_generation",
+   "pool": "constrained_generation",
+   "k": 3,
+   "exemplars": [
+    570,
+    727,
+    140
+   ],
+   "exemplar_types": [
+    "constrained_generation",
+    "constrained_generation",
+    "constrained_generation"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 819
+  },
+  "427": {
+   "reasoning_type": "inference",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    752,
+    585,
+    686
+   ],
+   "exemplar_types": [
+    "knowledge",
+    "inference",
+    "abstention"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 26,
+   "projected_tokens": 728
+  },
+  "433": {
+   "reasoning_type": "constrained_generation",
+   "pool": "constrained_generation",
+   "k": 3,
+   "exemplars": [
+    570,
+    140,
+    765
+   ],
+   "exemplar_types": [
+    "constrained_generation",
+    "constrained_generation",
+    "constrained_generation"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 797
+  },
+  "437": {
+   "reasoning_type": "constrained_generation",
+   "pool": "constrained_generation",
+   "k": 3,
+   "exemplars": [
+    140,
+    507,
+    745
+   ],
+   "exemplar_types": [
+    "constrained_generation",
+    "constrained_generation",
+    "constrained_generation"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 917
+  },
+  "453": {
+   "reasoning_type": "inference",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    42,
+    605,
+    427
+   ],
+   "exemplar_types": [
+    "knowledge",
+    "abstention",
+    "inference"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 26,
+   "projected_tokens": 660
+  },
+  "463": {
+   "reasoning_type": "inference",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    33,
+    427,
+    602
+   ],
+   "exemplar_types": [
+    "knowledge",
+    "inference",
+    "abstention"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 24,
+   "projected_tokens": 573
+  },
+  "468": {
+   "reasoning_type": "inference",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    543,
+    641,
+    585
+   ],
+   "exemplar_types": [
+    "abstention",
+    "knowledge",
+    "inference"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 24,
+   "projected_tokens": 564
+  },
+  "471": {
+   "reasoning_type": "inference",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    698,
+    33,
+    126
+   ],
+   "exemplar_types": [
+    "abstention",
+    "knowledge",
+    "inference"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 24,
+   "projected_tokens": 642
+  },
+  "489": {
+   "reasoning_type": "topic_sentence",
+   "pool": "topic_sentence",
+   "k": 3,
+   "exemplars": [
+    793,
+    676,
+    798
+   ],
+   "exemplar_types": [
+    "topic_sentence",
+    "topic_sentence",
+    "topic_sentence"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 4,
+   "projected_tokens": 1306
+  },
+  "495": {
+   "reasoning_type": "constrained_generation",
+   "pool": "constrained_generation",
+   "k": 3,
+   "exemplars": [
+    507,
+    424,
+    727
+   ],
+   "exemplar_types": [
+    "constrained_generation",
+    "constrained_generation",
+    "constrained_generation"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 796
+  },
+  "507": {
+   "reasoning_type": "constrained_generation",
+   "pool": "constrained_generation",
+   "k": 3,
+   "exemplars": [
+    140,
+    495,
+    745
+   ],
+   "exemplar_types": [
+    "constrained_generation",
+    "constrained_generation",
+    "constrained_generation"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 16,
+   "projected_tokens": 820
+  },
+  "517": {
+   "reasoning_type": "constrained_generation",
+   "pool": "constrained_generation",
+   "k": 3,
+   "exemplars": [
+    140,
+    780,
+    570
+   ],
+   "exemplar_types": [
+    "constrained_generation",
+    "constrained_generation",
+    "constrained_generation"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 16,
+   "projected_tokens": 698
+  },
+  "518": {
+   "reasoning_type": "inference",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    33,
+    468,
+    605
+   ],
+   "exemplar_types": [
+    "knowledge",
+    "inference",
+    "abstention"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 25,
+   "projected_tokens": 540
+  },
+  "543": {
+   "reasoning_type": "abstention",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    471,
+    3,
+    617
+   ],
+   "exemplar_types": [
+    "inference",
+    "knowledge",
+    "abstention"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 26,
+   "projected_tokens": 527
+  },
+  "569": {
+   "reasoning_type": "constrained_generation",
+   "pool": "constrained_generation",
+   "k": 3,
+   "exemplars": [
+    723,
+    888,
+    733
+   ],
+   "exemplar_types": [
+    "constrained_generation",
+    "constrained_generation",
+    "constrained_generation"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 16,
+   "projected_tokens": 1001
+  },
+  "570": {
+   "reasoning_type": "constrained_generation",
+   "pool": "constrained_generation",
+   "k": 3,
+   "exemplars": [
+    424,
+    733,
+    437
+   ],
+   "exemplar_types": [
+    "constrained_generation",
+    "constrained_generation",
+    "constrained_generation"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 16,
+   "projected_tokens": 864
+  },
+  "585": {
+   "reasoning_type": "inference",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    686,
+    17,
+    463
+   ],
+   "exemplar_types": [
+    "abstention",
+    "knowledge",
+    "inference"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 26,
+   "projected_tokens": 539
+  },
+  "598": {
+   "reasoning_type": "abstention",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    686,
+    3,
+    471
+   ],
+   "exemplar_types": [
+    "abstention",
+    "knowledge",
+    "inference"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 22,
+   "projected_tokens": 551
+  },
+  "602": {
+   "reasoning_type": "abstention",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    686,
+    38,
+    611
+   ],
+   "exemplar_types": [
+    "abstention",
+    "knowledge",
+    "inference"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 22,
+   "projected_tokens": 511
+  },
+  "605": {
+   "reasoning_type": "abstention",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    126,
+    6,
+    543
+   ],
+   "exemplar_types": [
+    "inference",
+    "knowledge",
+    "abstention"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 22,
+   "projected_tokens": 678
+  },
+  "611": {
+   "reasoning_type": "inference",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    638,
+    605,
+    126
+   ],
+   "exemplar_types": [
+    "knowledge",
+    "abstention",
+    "inference"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 26,
+   "projected_tokens": 645
+  },
+  "617": {
+   "reasoning_type": "abstention",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    468,
+    3,
+    543
+   ],
+   "exemplar_types": [
+    "inference",
+    "knowledge",
+    "abstention"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 22,
+   "projected_tokens": 565
+  },
+  "638": {
+   "reasoning_type": "knowledge",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    463,
+    686,
+    752
+   ],
+   "exemplar_types": [
+    "inference",
+    "abstention",
+    "knowledge"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 18,
+   "projected_tokens": 677
+  },
+  "641": {
+   "reasoning_type": "knowledge",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    698,
+    518,
+    752
+   ],
+   "exemplar_types": [
+    "abstention",
+    "inference",
+    "knowledge"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 18,
+   "projected_tokens": 671
+  },
+  "645": {
+   "reasoning_type": "character_modeling",
+   "pool": "character_modeling",
+   "k": 3,
+   "exemplars": [
+    862,
+    89,
+    115
+   ],
+   "exemplar_types": [
+    "character_modeling",
+    "character_modeling",
+    "character_modeling"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 9,
+   "projected_tokens": 1421
+  },
+  "666": {
+   "reasoning_type": "phrase_cloze",
+   "pool": "phrase_cloze",
+   "k": 3,
+   "exemplars": [
+    146,
+    269,
+    199
+   ],
+   "exemplar_types": [
+    "phrase_cloze",
+    "phrase_cloze",
+    "phrase_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 16,
+   "projected_tokens": 1046
+  },
+  "667": {
+   "reasoning_type": "phrase_cloze",
+   "pool": "phrase_cloze",
+   "k": 3,
+   "exemplars": [
+    254,
+    146,
+    199
+   ],
+   "exemplar_types": [
+    "phrase_cloze",
+    "phrase_cloze",
+    "phrase_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 1079
+  },
+  "676": {
+   "reasoning_type": "topic_sentence",
+   "pool": "topic_sentence",
+   "k": 3,
+   "exemplars": [
+    798,
+    808,
+    489
+   ],
+   "exemplar_types": [
+    "topic_sentence",
+    "topic_sentence",
+    "topic_sentence"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 4,
+   "projected_tokens": 1490
+  },
+  "686": {
+   "reasoning_type": "abstention",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    641,
+    453,
+    617
+   ],
+   "exemplar_types": [
+    "knowledge",
+    "inference",
+    "abstention"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 25,
+   "projected_tokens": 612
+  },
+  "698": {
+   "reasoning_type": "abstention",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    752,
+    518,
+    543
+   ],
+   "exemplar_types": [
+    "knowledge",
+    "inference",
+    "abstention"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 22,
+   "projected_tokens": 693
+  },
+  "712": {
+   "reasoning_type": "constrained_generation",
+   "pool": "constrained_generation",
+   "k": 3,
+   "exemplars": [
+    424,
+    140,
+    569
+   ],
+   "exemplar_types": [
+    "constrained_generation",
+    "constrained_generation",
+    "constrained_generation"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 897
+  },
+  "723": {
+   "reasoning_type": "constrained_generation",
+   "pool": "constrained_generation",
+   "k": 3,
+   "exemplars": [
+    733,
+    140,
+    745
+   ],
+   "exemplar_types": [
+    "constrained_generation",
+    "constrained_generation",
+    "constrained_generation"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 984
+  },
+  "727": {
+   "reasoning_type": "constrained_generation",
+   "pool": "constrained_generation",
+   "k": 3,
+   "exemplars": [
+    569,
+    733,
+    495
+   ],
+   "exemplar_types": [
+    "constrained_generation",
+    "constrained_generation",
+    "constrained_generation"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 851
+  },
+  "733": {
+   "reasoning_type": "constrained_generation",
+   "pool": "constrained_generation",
+   "k": 3,
+   "exemplars": [
+    495,
+    745,
+    765
+   ],
+   "exemplar_types": [
+    "constrained_generation",
+    "constrained_generation",
+    "constrained_generation"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 947
+  },
+  "742": {
+   "reasoning_type": "knowledge",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    17,
+    453,
+    543
+   ],
+   "exemplar_types": [
+    "knowledge",
+    "inference",
+    "abstention"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 26,
+   "projected_tokens": 634
+  },
+  "745": {
+   "reasoning_type": "constrained_generation",
+   "pool": "constrained_generation",
+   "k": 3,
+   "exemplars": [
+    517,
+    780,
+    437
+   ],
+   "exemplar_types": [
+    "constrained_generation",
+    "constrained_generation",
+    "constrained_generation"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 908
+  },
+  "752": {
+   "reasoning_type": "knowledge",
+   "pool": "world_qa",
+   "k": 3,
+   "exemplars": [
+    638,
+    605,
+    427
+   ],
+   "exemplar_types": [
+    "knowledge",
+    "abstention",
+    "inference"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 26,
+   "projected_tokens": 716
+  },
+  "758": {
+   "reasoning_type": "constrained_generation",
+   "pool": "constrained_generation",
+   "k": 3,
+   "exemplars": [
+    507,
+    437,
+    727
+   ],
+   "exemplar_types": [
+    "constrained_generation",
+    "constrained_generation",
+    "constrained_generation"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 926
+  },
+  "765": {
+   "reasoning_type": "constrained_generation",
+   "pool": "constrained_generation",
+   "k": 3,
+   "exemplars": [
+    723,
+    495,
+    424
+   ],
+   "exemplar_types": [
+    "constrained_generation",
+    "constrained_generation",
+    "constrained_generation"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 1095
+  },
+  "780": {
+   "reasoning_type": "constrained_generation",
+   "pool": "constrained_generation",
+   "k": 3,
+   "exemplars": [
+    570,
+    433,
+    727
+   ],
+   "exemplar_types": [
+    "constrained_generation",
+    "constrained_generation",
+    "constrained_generation"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 892
+  },
+  "793": {
+   "reasoning_type": "topic_sentence",
+   "pool": "topic_sentence",
+   "k": 3,
+   "exemplars": [
+    676,
+    489,
+    798
+   ],
+   "exemplar_types": [
+    "topic_sentence",
+    "topic_sentence",
+    "topic_sentence"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 4,
+   "projected_tokens": 1297
+  },
+  "798": {
+   "reasoning_type": "topic_sentence",
+   "pool": "topic_sentence",
+   "k": 3,
+   "exemplars": [
+    489,
+    808,
+    676
+   ],
+   "exemplar_types": [
+    "topic_sentence",
+    "topic_sentence",
+    "topic_sentence"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 4,
+   "projected_tokens": 1493
+  },
+  "808": {
+   "reasoning_type": "topic_sentence",
+   "pool": "topic_sentence",
+   "k": 3,
+   "exemplars": [
+    798,
+    676,
+    793
+   ],
+   "exemplar_types": [
+    "topic_sentence",
+    "topic_sentence",
+    "topic_sentence"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 4,
+   "projected_tokens": 1566
+  },
+  "814": {
+   "reasoning_type": "sentence_cloze",
+   "pool": "sentence_cloze",
+   "k": 3,
+   "exemplars": [
+    239,
+    313,
+    294
+   ],
+   "exemplar_types": [
+    "sentence_cloze",
+    "sentence_cloze",
+    "sentence_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 18,
+   "projected_tokens": 1180
+  },
+  "828": {
+   "reasoning_type": "sentence_cloze",
+   "pool": "sentence_cloze",
+   "k": 3,
+   "exemplars": [
+    398,
+    362,
+    229
+   ],
+   "exemplar_types": [
+    "sentence_cloze",
+    "sentence_cloze",
+    "sentence_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 1016
+  },
+  "830": {
+   "reasoning_type": "sentence_cloze",
+   "pool": "sentence_cloze",
+   "k": 3,
+   "exemplars": [
+    322,
+    239,
+    356
+   ],
+   "exemplar_types": [
+    "sentence_cloze",
+    "sentence_cloze",
+    "sentence_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 1007
+  },
+  "844": {
+   "reasoning_type": "sentence_cloze",
+   "pool": "sentence_cloze",
+   "k": 3,
+   "exemplars": [
+    304,
+    329,
+    814
+   ],
+   "exemplar_types": [
+    "sentence_cloze",
+    "sentence_cloze",
+    "sentence_cloze"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 18,
+   "projected_tokens": 1164
+  },
+  "862": {
+   "reasoning_type": "character_modeling",
+   "pool": "character_modeling",
+   "k": 3,
+   "exemplars": [
+    645,
+    107,
+    875
+   ],
+   "exemplar_types": [
+    "character_modeling",
+    "character_modeling",
+    "character_modeling"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 12,
+   "projected_tokens": 1436
+  },
+  "875": {
+   "reasoning_type": "character_modeling",
+   "pool": "character_modeling",
+   "k": 3,
+   "exemplars": [
+    862,
+    96,
+    86
+   ],
+   "exemplar_types": [
+    "character_modeling",
+    "character_modeling",
+    "character_modeling"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 9,
+   "projected_tokens": 1487
+  },
+  "880": {
+   "reasoning_type": "character_modeling",
+   "pool": "character_modeling",
+   "k": 3,
+   "exemplars": [
+    86,
+    115,
+    111
+   ],
+   "exemplar_types": [
+    "character_modeling",
+    "character_modeling",
+    "character_modeling"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 9,
+   "projected_tokens": 1346
+  },
+  "888": {
+   "reasoning_type": "constrained_generation",
+   "pool": "constrained_generation",
+   "k": 3,
+   "exemplars": [
+    733,
+    758,
+    765
+   ],
+   "exemplar_types": [
+    "constrained_generation",
+    "constrained_generation",
+    "constrained_generation"
+   ],
+   "dropped": [],
+   "fallback": false,
+   "short_pool": false,
+   "n_eligible": 17,
+   "projected_tokens": 1207
+  }
+ },
+ "benchmark": "chronologic_en_1.0_sample.jsonl",
+ "benchmark_version": "1.0",
+ "benchmark_sha256": "858c7848efa1a194eb8b9818ddeb929ec51e755287a2aadcc4addfb388b12cca"
+}
