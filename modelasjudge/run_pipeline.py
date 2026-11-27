@@ -315,11 +315,33 @@ def check_candidate_effort_matches_free_gen(candidate_label: str, benchmark_vers
         )
 
 
+_FRAME_CONDITION_CACHE: dict[str, str | None] = {}
+
+
+def benchmark_frame_condition(benchmark) -> str | None:
+    """naming.benchmark_frame_condition(), cached per resolved path (the
+    benchmark is read once per process however many times the label is asked
+    for). Exits on an unmarked or mixed variant."""
+    if not benchmark:
+        return None
+    key = str(Path(benchmark).resolve())
+    if key not in _FRAME_CONDITION_CACHE:
+        try:
+            _FRAME_CONDITION_CACHE[key] = naming.benchmark_frame_condition(benchmark)
+        except naming.FrameConditionError as exc:
+            sys.exit(f"ERROR: {exc}")
+    return _FRAME_CONDITION_CACHE[key]
+
+
 def effective_candidate_label(args) -> str:
     """The label every stage keys on. Few-shot runs get a '-fs{K}s{S}' suffix so
     their free_gen file, scores and ledger rows never collide with (or resume
-    into) the zero-shot run of the same model."""
-    label = args.candidate_label or args.candidate
+    into) the zero-shot run of the same model. A candidate-frame variant
+    benchmark (booksample/build_candidate_frame_variant.py) adds '-{condition}'
+    for the same reason: its version tag deliberately matches the real
+    benchmark's, so the label is the only thing keeping its outputs apart."""
+    label = naming.condition_label(args.candidate_label or args.candidate,
+                                   benchmark_frame_condition(getattr(args, "benchmark", None)))
     k = getattr(args, "fewshot", None)
     if k is None:
         return label
@@ -854,6 +876,14 @@ def main():
     args.benchmark = str(benchmark_path)  # build_stages then reuses it rather than re-resolving
     bver = naming.benchmark_version(benchmark_path)
     check_judge_effort_matches_seed(args.judge, bver, args.judge_effort, args.seed_reliability_from)
+    condition = benchmark_frame_condition(args.benchmark)
+    if condition is not None:
+        if args.fewshot is not None:
+            sys.exit(f"ERROR: {benchmark_path.name} carries candidate_frame_condition="
+                     f"{condition!r}; --fewshot is not supported for candidate-frame variants.")
+        print(f"*** Candidate-frame variant ({condition!r}): the candidate sees "
+              f"candidate_metadata_frame, judges grade against the true frame. "
+              f"Candidate label: {effective_candidate_label(args)!r} ***")
     check_candidate_effort_matches_free_gen(
         effective_candidate_label(args), bver, args.candidate_effort)
     if args.fewshot is not None:

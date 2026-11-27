@@ -25,6 +25,9 @@ __pycache__/
 # a narrower chronologic_en_* pattern. The negation re-admits the public sample.
 booksample/chronologic*
 !booksample/chronologic_en_1.0_sample.jsonl
+# Anachronism-ablation frames: one row per question, listing every source
+# title and metadata frame of the withheld benchmark.
+modelasjudge/anachronism_test/anachronism_frames_*.tsv
 
 # --- question-pipeline scratch output ---
 old_process_files/

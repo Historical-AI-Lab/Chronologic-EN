@@ -148,6 +148,10 @@ def cmd_score(args):
         prior_scale=bank.metas.get("calib_draws", {}).get("prior_scale"),
         run_date=str(date.today()), seed=args.seed, n_boot=args.n_boot, report_path=str(report_path),
     )
+    # Which candidate-frame variant (if any) the candidate was shown -- the
+    # label already carries it as a suffix; this makes it filterable.
+    row["candidate_frame_condition"] = (
+        naming.benchmark_frame_condition(resolved["benchmark_path"]) or "")
 
     output_path = (Path(args.output) if args.output
                    else substantive_artifacts.scores_path(resolved["candidate_label"], resolved["benchmark_path"]))

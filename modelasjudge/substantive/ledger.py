@@ -58,6 +58,9 @@ COLUMNS = [
     "style_T_drift_e3", "style_T_disp_e3", "style_T_KS_e3",
     "style_date_run_id_e3", "style_n_e1_abstained_e3",
     "n_boot", "seed", "inputs_sha", "report_path", "notes",
+    # booksample/build_candidate_frame_variant.py condition the candidate was
+    # shown ("anachronism", "wrongframe"); empty for real-benchmark runs.
+    "candidate_frame_condition",
 ]
 
 # Dropped from COLUMNS but may still linger as a header on old CSVs written

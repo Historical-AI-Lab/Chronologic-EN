@@ -5,6 +5,8 @@ import these helpers so that {candidate}__{version} suffixes are identical acros
 free_generation, judge_scoring, discriminative_scoring, and score_calculation.
 """
 
+from __future__ import annotations
+
 import re
 from pathlib import Path
 
@@ -69,6 +71,71 @@ def latest_benchmark(booksample_dir) -> Path:
         return (int(m.group(1)), int(m.group(2)))
 
     return max(candidates, key=_ver)
+
+
+class FrameConditionError(ValueError):
+    """A benchmark's candidate-frame override is unmarked or inconsistent."""
+
+
+def frame_condition_of_records(records) -> str | None:
+    """The candidate-frame condition shared by `records`, or None.
+
+    A benchmark variant built by booksample/build_candidate_frame_variant.py
+    gives every record a `candidate_metadata_frame` (what the CANDIDATE is
+    shown) and a `candidate_frame_condition` naming the manipulation
+    (e.g. "anachronism", "wrongframe"). The condition is what keeps such runs
+    from sharing a candidate label -- and so every output file and ledger
+    row -- with the real run of the same model, so an override without a
+    marker, a marker without an override, or two different markers in one
+    file are all refused rather than guessed at.
+    """
+    conditions = set()
+    unmarked = []
+    for rec in records:
+        cond = rec.get("candidate_frame_condition")
+        has_frame = bool(rec.get("candidate_metadata_frame"))
+        if has_frame and not cond:
+            unmarked.append(rec.get("question_number"))
+        elif cond and not has_frame:
+            raise FrameConditionError(
+                f"question_number {rec.get('question_number')!r} carries "
+                f"candidate_frame_condition={cond!r} but no candidate_metadata_frame.")
+        if cond:
+            conditions.add(cond)
+    if unmarked:
+        raise FrameConditionError(
+            f"{len(unmarked)} question(s) carry candidate_metadata_frame without a "
+            f"candidate_frame_condition (first: {unmarked[:5]}). Rebuild the variant with "
+            f"booksample/build_candidate_frame_variant.py, which marks every record, so "
+            f"its runs get a distinct candidate label.")
+    if len(conditions) > 1:
+        raise FrameConditionError(
+            f"benchmark mixes candidate_frame_conditions {sorted(conditions)}; "
+            f"one variant file must hold one condition.")
+    if conditions:
+        cond = conditions.pop()
+        if not re.fullmatch(r"[a-z0-9]+", cond):
+            raise FrameConditionError(
+                f"candidate_frame_condition {cond!r} must be lowercase letters/digits only "
+                f"(it becomes a '-{cond}' candidate-label suffix).")
+        return cond
+    return None
+
+
+def benchmark_frame_condition(benchmark_path) -> str | None:
+    """frame_condition_of_records() for a benchmark JSONL on disk."""
+    import json
+    with open(benchmark_path, encoding="utf-8") as fh:
+        records = [json.loads(line) for line in fh if line.strip()]
+    return frame_condition_of_records(records)
+
+
+def condition_label(label: str, condition: str | None) -> str:
+    """`label` with a '-{condition}' suffix, added once; unchanged if no condition."""
+    if not condition:
+        return label
+    suffix = f"-{condition}"
+    return label if label.endswith(suffix) else label + suffix
 
 
 def scored_answers_filename(

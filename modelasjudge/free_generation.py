@@ -62,6 +62,11 @@ from openrouter_client import (
     always_reasons,
 )
 from naming import benchmark_version as _benchmark_version, candidate_tag as _candidate_tag
+from naming import (
+    FrameConditionError,
+    condition_label as _condition_label,
+    frame_condition_of_records as _frame_condition_of_records,
+)
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -575,6 +580,44 @@ def _sanitize_model_id(model_id):
 _GENERATED_DIR = Path(__file__).parent / "generated_answers"
 
 
+def resolve_frame_condition(all_questions, candidate_label, *, output_path=None, fewshot_k=None):
+    """Return (condition, label) for a benchmark that may carry candidate frames.
+
+    A benchmark variant whose records carry `candidate_metadata_frame` shows the
+    candidate a different context than the judge grades against. Its answers
+    must never land under the real run's label, so the label gets a
+    '-{condition}' suffix here (added once). Raises SystemExit if the variant
+    is unmarked, if an explicit --output path would bypass the suffix, or if
+    few-shot is requested (exemplars would show variant frames over period
+    answers, which is not the condition being tested).
+    """
+    try:
+        condition = _frame_condition_of_records(all_questions)
+    except FrameConditionError as exc:
+        sys.exit(f"ERROR: {exc}")
+    if condition is None:
+        return None, candidate_label
+    if fewshot_k is not None:
+        sys.exit(f"ERROR: benchmark carries candidate_frame_condition={condition!r}; "
+                 f"few-shot is not supported for candidate-frame variants.")
+    label = _condition_label(candidate_label, condition)
+    if output_path is not None and f"-{condition}" not in Path(output_path).name:
+        sys.exit(f"ERROR: --output {output_path} lacks '-{condition}' in its filename, but the "
+                 f"benchmark carries candidate_frame_condition={condition!r}. Omit --output "
+                 f"(the auto-named file uses label {label!r}) or include the suffix.")
+    return condition, label
+
+
+def check_resume_condition(existing, condition, output_path):
+    """Refuse to resume into a file generated under a different frame condition."""
+    existing_cond = existing.get("candidate_frame_condition")
+    if existing_cond != condition:
+        sys.exit(
+            f"ERROR: {output_path} was generated with candidate_frame_condition="
+            f"{existing_cond!r}, but this benchmark has {condition!r}. Resuming would mix "
+            f"answers written under different contexts in one file.")
+
+
 def run_free_generation(
     model_id,
     path_to_jsonl,
@@ -638,6 +681,8 @@ def run_free_generation(
         candidate_label = model_id
 
     all_questions = _load_questions(path_to_jsonl)
+    frame_condition, candidate_label = resolve_frame_condition(
+        all_questions, candidate_label, output_path=output_path, fewshot_k=fewshot_k)
     questions = all_questions
     if num_questions is not None:
         questions = questions[:num_questions]
@@ -697,6 +742,7 @@ def run_free_generation(
     if output_path.exists():
         with open(output_path, encoding='utf-8') as fh:
             existing = json.load(fh)
+        check_resume_condition(existing, frame_condition, output_path)
         existing_fs = existing.get('fewshot')
         if existing_fs != fs_config:
             sys.exit(
@@ -723,6 +769,8 @@ def run_free_generation(
     }
     if fs_config is not None:
         output_data["fewshot"] = fs_config
+    if frame_condition is not None:
+        output_data["candidate_frame_condition"] = frame_condition
 
     if use_openai:
         org_id, api_key = load_openai_credentials(credentials_path)
@@ -749,8 +797,8 @@ def run_free_generation(
     n_overridden = sum(1 for q in questions if q.get('candidate_metadata_frame'))
     if n_overridden:
         print(f"\n*** {n_overridden}/{len(questions)} questions use candidate_metadata_frame "
-              f"-- the candidate is being shown a DIFFERENT context than the judge will "
-              f"grade against. ***\n")
+              f"(condition {frame_condition!r}, label {candidate_label!r}) -- the candidate "
+              f"is being shown a DIFFERENT context than the judge will grade against. ***\n")
 
     # Generate answers
     total = len(questions)
