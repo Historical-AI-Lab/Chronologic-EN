@@ -27,10 +27,10 @@ echo "Job starting on $(hostname)"
 date
 
 module reset
-module load cudatoolkit/25.3_12.8
+module load cudatoolkit/26.5_13.2
 module list
 
-source "$SLURM_SUBMIT_DIR/../evalcode/talkie-eval-env/bin/activate"
+source "$SLURM_SUBMIT_DIR/../../chronologic/evalcode/talkie-eval-env/bin/activate"
 
 export HF_HOME=/work/nvme/bdfx/.cache/huggingface
 export HF_HUB_OFFLINE=1
